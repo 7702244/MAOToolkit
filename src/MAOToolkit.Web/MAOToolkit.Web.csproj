@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>MAOToolkit.Web</PackageId>
+		<PackageIcon>icon.png</PackageIcon>
+		<Version>1.0.0</Version>
+		<Authors>MAO</Authors>
+		<Company>MAO</Company>
+		<Description>
+			Useful extensions and utilities for .NET Core Web Projects.
+		</Description>
+	</PropertyGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MAOToolkit\MAOToolkit.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>
