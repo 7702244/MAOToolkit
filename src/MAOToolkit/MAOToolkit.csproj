@@ -4,9 +4,8 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyyMMdd-hhmmss))</BuildNumber>
-		<VersionPrefix>1.0</VersionPrefix>
-		<VersionSuffix>$(BuildNumber)</VersionSuffix>
+		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyMM.ddhh.mmss))</BuildNumber>
+		<VersionPrefix>1.$(BuildNumber)</VersionPrefix>
 
 		<PackageId>MAOToolkit</PackageId>
 		<PackageIcon>icon.png</PackageIcon>
