@@ -6,8 +6,8 @@ name: .NET Publish Nuget Packages
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ "main" ]
+  #push:
+  #  branches: [ "main" ]
   pull_request:
     types: [closed]
     branches: [ "main" ]
@@ -69,9 +69,16 @@ jobs:
       - name: Create the package
         run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal
 
-      - uses: release-drafter/release-drafter@v5
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        with:
+          body: ${{steps.github_release.outputs.changelog}}
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
