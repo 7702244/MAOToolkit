@@ -67,7 +67,11 @@ jobs:
         run: dotnet test $SOLUTION /p:Configuration=Release --no-restore --no-build --verbosity normal
         
       - name: Create the package
-        run: dotnet pack $SOLUTION --configuration Release
+        run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal
+
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN

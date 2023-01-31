@@ -1,4 +1,4 @@
-﻿namespace MAOToolkit.Extensions
+namespace MAOToolkit.Extensions
 {
     public static class TimeZoneInfoExtensions
     {

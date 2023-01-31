@@ -1,4 +1,4 @@
-﻿using MAOToolkit.Extensions;
+using MAOToolkit.Extensions;
 
 namespace MAOToolkit.Utilities.HttpClientHandlers
 {
