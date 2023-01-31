@@ -69,16 +69,15 @@ jobs:
       - name: Create the package
         run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal
 
-      - name: Build Changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "✏️ Generate release changelog"
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Create Release
         uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
         with:
-          body: ${{steps.github_release.outputs.changelog}}
+          body: ${{steps.outputs.changelog}}
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
