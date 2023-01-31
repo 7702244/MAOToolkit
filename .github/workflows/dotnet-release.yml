@@ -87,14 +87,13 @@ jobs:
           path: CHANGELOG.md
 
       - name: "🚀 Create GitHub release"
-        uses: ncipollo/release-action@v1
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: $GITHUB_REF_NAME
-          bodyFile: "CHANGELOG.md"
-          name: Release $GITHUB_REF_NAME
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.outputs.changelog }}
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
