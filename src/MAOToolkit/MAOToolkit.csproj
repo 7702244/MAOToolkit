@@ -31,6 +31,11 @@
 		<Authors>MAO</Authors>
 		<Company>MAO</Company>
 	</PropertyGroup>
+	<Target Name="PrepareReleaseNotes" BeforeTargets="GenerateNuspec">
+		<PropertyGroup>
+			<PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../CHANGELOG.md"))</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
 	<ItemGroup>
 		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
