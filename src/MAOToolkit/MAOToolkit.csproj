@@ -4,16 +4,41 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyVersion>1.0.*</AssemblyVersion>
+		<Deterministic>false</Deterministic>
+		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
+
 		<PackageId>MAOToolkit</PackageId>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.0.0</Version>
+
+		<!-- A description for the NuGet package -->
+		<PackageDescription>Useful extensions and utilities for .NET Core Projects.</PackageDescription>
+		
+		<!-- The URL where the code is stored -->
+		<RepositoryUrl>https://github.com/7702244/MAOToolkit</RepositoryUrl>
+		
+		<!-- The URL where the NuGet package should be uploaded -->
+		<PackageProjectUrl>https://github.com/7702244/MAOToolkit</PackageProjectUrl>
+		
+		<!-- Use the type "git" for GitHub repositories -->
+		<RepositoryType>git</RepositoryType>
+		
+		<!-- This setting disables automatically creating a NuGet package locally after each successful build.
+			We can turn this off since we want GitHub Actions to manage our repo packages -->
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		
+		<!-- Authorship metadata -->
 		<Authors>MAO</Authors>
 		<Company>MAO</Company>
-		<Description>
-			Useful extensions and utilities for .NET Core Projects.
-		</Description>
 	</PropertyGroup>
+	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build">
+		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
+		</GetAssemblyIdentity>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 	<ItemGroup>
 		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>

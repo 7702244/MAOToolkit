@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: .NET Publish Nuget Packages
 
 # Controls when the workflow will run
 on:
@@ -16,15 +16,19 @@ on:
   workflow_dispatch:
     
 env:
+  # Path to solution
+  SOLUTION: 'src/MAOToolkit.sln'
   # Stop wasting time caching packages
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable .NET welcome and telemetry messages are displayed on the first run
+  DOTNET_NOLOGO: true
   # Disable sending usage data to Microsoft
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   # Project name to pack and publish
   PROJECT_NAME: MAOToolkit
   # GitHub Packages Feed settings
   GITHUB_FEED: https://nuget.pkg.github.com/7702244/index.json
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGES_TOKEN }}
   # Official NuGet Feed settings
   NUGET_FEED: https://api.nuget.org/v3/index.json
   NUGET_KEY: ${{ secrets.NUGET_KEY }}
@@ -33,13 +37,12 @@ env:
 jobs:
   # This workflow contains a single job called "build"
   build:
-
-    env:
-      BUILD_CONFIG: 'Release'
-      SOLUTION: 'src/MAOToolkit.sln'
       
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    # Max timeout for job.
+    timeout-minutes: 5
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -50,21 +53,22 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
+      - run: echo ".NET version: $(dotnet --version)"
         
       - name: Restore dependencies
         run: dotnet restore $SOLUTION
         
       - name: Build
-        run: dotnet build $SOLUTION --configuration $BUILD_CONFIG --no-restore
+        run: dotnet build $SOLUTION --configuration Release --no-restore
         
       - name: Test
-        run: dotnet test $SOLUTION /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
+        run: dotnet test $SOLUTION /p:Configuration=Release --no-restore --no-build --verbosity normal
         
       - name: Create the package
-        run: dotnet pack $SOLUTION --configuration $BUILD_CONFIG
+        run: dotnet pack $SOLUTION --configuration Release
         
       - name: Publish the package to GitHub Feed
-        run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED
+        run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
         
       - name: Publish the package to NuGet Feed
         run: dotnet nuget push **\*.nupkg --source $NUGET_FEED --api-key $NUGET_KEY
