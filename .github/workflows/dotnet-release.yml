@@ -74,13 +74,22 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }} 
 
-      - name: View Changelog
-        run: echo ${{steps.outputs.changelog}}
-
-      - name: Create Release
-        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+      - name: "🖨️ Print changelog to console"
+        run: cat CHANGELOG.md
+      - name: "📤 Upload changelog"
+        uses: actions/upload-artifact@v1.0.0
         with:
-          body: ${{steps.outputs.changelog}}
+          name: "Changelog"
+          path: CHANGELOG.md
+
+      - name: "🚀 Create GitHub release"
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.outputs.changelog }}
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
