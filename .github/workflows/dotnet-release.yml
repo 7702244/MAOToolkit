@@ -66,9 +66,6 @@ jobs:
         
       - name: Test
         run: dotnet test $SOLUTION /p:Configuration=Release --no-restore --no-build --verbosity normal
-        
-      - name: Create the package
-        run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal
 
       # https://github.com/heinrichreimer/action-github-changelog-generator
       - name: "✏️ Generate release changelog"
@@ -84,6 +81,9 @@ jobs:
         with:
           name: "Changelog"
           path: CHANGELOG.md
+
+      - name: Create the package
+        run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal
 
       - name: Get current date
         id: date
