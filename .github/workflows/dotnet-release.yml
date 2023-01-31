@@ -55,7 +55,7 @@ jobs:
           dotnet-version: 7.0.x
 
       - name: Check .NET Version
-        run: echo '.NET version: $(dotnet --version)'
+        run: echo .NET version: $(dotnet --version)
         
       - name: Restore dependencies
         run: dotnet restore $SOLUTION
