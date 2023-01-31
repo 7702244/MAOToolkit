@@ -73,6 +73,7 @@ jobs:
         uses: heinrichreimer/github-changelog-generator-action@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }} 
+          stripGeneratorNotice: true
 
       - name: "🖨️ Print changelog to console"
         run: cat CHANGELOG.md
@@ -83,13 +84,14 @@ jobs:
           path: CHANGELOG.md
 
       - name: "🚀 Create GitHub release"
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: $GITHUB_REF_NAME
-          release_name: Release $GITHUB_REF_NAME
-          body: ${{ steps.outputs.changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: $GITHUB_REF_NAME
+          bodyFile: "CHANGELOG.md"
+          name: Release $GITHUB_REF_NAME
         
       - name: Publish the package to GitHub Feed
         run: dotnet nuget push **\*.nupkg --source $GITHUB_FEED --api-key $GITHUB_TOKEN
