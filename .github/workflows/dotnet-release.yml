@@ -87,7 +87,7 @@ jobs:
 
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%h-%M')"
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d %R')"
 
       # https://github.com/ncipollo/release-action
       - name: "🚀 Create GitHub release"
