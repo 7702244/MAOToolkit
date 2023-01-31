@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 		<AssemblyVersion>1.0.*</AssemblyVersion>
 		<Deterministic>false</Deterministic>
-		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
 		
 		<PackageId>MAOToolkit.Web</PackageId>
 		<PackageIcon>icon.png</PackageIcon>
@@ -31,7 +30,7 @@
 		<Authors>MAO</Authors>
 		<Company>MAO</Company>
 	</PropertyGroup>
-	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build">
+	<Target Name="ReadPackageVersionFromOutputAssembly" AfterTargets="Build">
 		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
 			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
 		</GetAssemblyIdentity>
