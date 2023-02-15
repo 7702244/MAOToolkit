@@ -19,7 +19,7 @@ namespace MAOToolkit.Extensions
                 var entry = archive.CreateEntry(Path.Combine(entryName, fileName), CompressionLevel.Optimal);
                 entry.LastWriteTime = File.GetLastWriteTime(sourcePath);
 
-                using (var fileStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var fileStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 using (var entryStream = entry.Open())
                 {
                     fileStream.CopyTo(entryStream);
