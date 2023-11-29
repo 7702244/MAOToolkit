@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace WebApplication.Core.Services
+namespace MAOToolkit.Utilities
 {
     /// <summary>
     /// A LockProvider based upon the SemaphoreSlim class to selectively lock objects, resources or statement blocks 
