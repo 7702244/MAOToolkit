@@ -23,10 +23,10 @@ namespace MAOToolkit.Extensions
         {
             if (!tempData.TryGetValue(key, out object? obj) || obj is null)
             {
-                return new();
+                return new T();
             }
 
-            return JsonSerializer.Deserialize<T>((string)obj, JsonSettings) ?? new();
+            return JsonSerializer.Deserialize<T>((string)obj, JsonSettings) ?? new T();
         }
 
         public static T Peek<T>(this ITempDataDictionary tempData, string key) where T : new()

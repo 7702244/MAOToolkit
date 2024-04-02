@@ -30,7 +30,7 @@ namespace MAOToolkit.Extensions
             // Example:
             // If-Modified-Since: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
             // If-Modified-Since: Wed, 21 Oct 2015 07:28:00 GMT
-            var headerValue = request.Headers.IfModifiedSince.FirstOrDefault();
+            string? headerValue = request.Headers.IfModifiedSince.FirstOrDefault();
             if (DateTime.TryParse(headerValue, out DateTime isModifiedSince))
             {
                 isModifiedSince = DateTime.SpecifyKind(isModifiedSince, DateTimeKind.Utc);
@@ -161,12 +161,11 @@ namespace MAOToolkit.Extensions
                 throw new ArgumentNullException(nameof(request));
 
             request.Body.Seek(0, SeekOrigin.Begin);
-            using (var ms = new MemoryStream(1024))
-            {
-                await request.Body.CopyToAsync(ms, request.HttpContext.RequestAborted);
-                request.Body.Seek(0, SeekOrigin.Begin);
-                return ms.ToArray();
-            }
+            
+            using var ms = new MemoryStream(1024);
+            await request.Body.CopyToAsync(ms, request.HttpContext.RequestAborted);
+            request.Body.Seek(0, SeekOrigin.Begin);
+            return ms.ToArray();
         }
     }
 }

@@ -100,7 +100,7 @@ namespace MAOToolkit.Extensions
             {
                 if (!String.IsNullOrEmpty(s) && s.Trim().Length > 0)
                 {
-                    TypeConverter conv = TypeDescriptor.GetConverter(typeof(T));
+                    var conv = TypeDescriptor.GetConverter(typeof(T));
                     result = (T?)conv.ConvertFrom(s);
                 }
             }

@@ -9,7 +9,7 @@ namespace MAOToolkit.Extensions
             this IEnumerable<T> source,
             Action<T> act)
         {
-            foreach (T element in source)
+            foreach (var element in source)
             {
                 act(element);
             }

@@ -20,7 +20,7 @@ namespace MAOToolkit.Utilities.ModelBinders
                 return Task.CompletedTask;
             }
 
-            var value = valueProviderResult.FirstValue;
+            string? value = valueProviderResult.FirstValue;
 
             if (String.IsNullOrWhiteSpace(value))
             {

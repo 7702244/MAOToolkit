@@ -15,7 +15,7 @@ namespace MAOToolkit.Extensions
 
         public static async Task<TValue> GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<Task<TValue>> getter) where TKey : notnull
         {
-            if (!dictionary.TryGetValue(key, out TValue? value))
+            if (!dictionary.TryGetValue(key, out var value))
             {
                 value = await getter();
                 dictionary.Add(key, value);

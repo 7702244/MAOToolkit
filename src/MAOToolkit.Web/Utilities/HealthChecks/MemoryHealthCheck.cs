@@ -17,8 +17,8 @@ namespace MAOToolkit.Utilities.HealthChecks
             CancellationToken cancellationToken = default)
         {
             // Include GC information in the reported diagnostics.
-            var allocatedMb = GC.GetTotalMemory(forceFullCollection: false) / 1024 / 1024;
-            var data = new Dictionary<string, object>()
+            long allocatedMb = GC.GetTotalMemory(forceFullCollection: false) / 1024 / 1024;
+            var data = new Dictionary<string, object>
             {
                 { "AllocatedMegabytes", allocatedMb },
                 { "Gen0Collections", GC.CollectionCount(0) },

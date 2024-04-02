@@ -30,7 +30,7 @@ namespace MAOToolkit.Extensions
         public static void CreateEntryFromDirectory(this ZipArchive archive, string sourceDirName, string entryName = "")
         {
             var files = Directory.EnumerateFileSystemEntries(sourceDirName);
-            foreach (var file in files)
+            foreach (string file in files)
             {
                 archive.CreateEntryFromAny(file, entryName);
             }
