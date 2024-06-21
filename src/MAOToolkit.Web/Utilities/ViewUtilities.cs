@@ -37,7 +37,7 @@ namespace MAOToolkit.Utilities
             var viewResult = razorViewEngine.GetView(null, viewName, false);
             if (!viewResult.Success)
             {
-                throw new InvalidOperationException(String.Format("Couldn't find view '{0}'. Searched: {1}", viewName, String.Join(',', viewResult.SearchedLocations)));
+                throw new InvalidOperationException($"Couldn't find view '{viewName}'. Searched: {String.Join(',', viewResult.SearchedLocations)}");
             }
 
             var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
@@ -45,20 +45,19 @@ namespace MAOToolkit.Utilities
                 Model = model
             };
 
-            using (var writer = new StringWriter())
-            {
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
-                    writer,
-                    new HtmlHelperOptions()
-                );
+            await using var writer = new StringWriter();
+            
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
+                writer,
+                new HtmlHelperOptions()
+            );
 
-                await viewResult.View.RenderAsync(viewContext);
-                return writer.ToString();
-            }
+            await viewResult.View.RenderAsync(viewContext);
+            return writer.ToString();
         }
     }
 }

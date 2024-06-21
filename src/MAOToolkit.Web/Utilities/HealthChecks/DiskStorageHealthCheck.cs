@@ -19,8 +19,8 @@ namespace MAOToolkit.Utilities.HealthChecks
             CancellationToken cancellationToken = default)
         {
             // Include drive information in the reported diagnostics.
-            var freeMb = drive.AvailableFreeSpace / 1024 / 1024;
-            var data = new Dictionary<string, object>()
+            long freeMb = drive.AvailableFreeSpace / 1024 / 1024;
+            var data = new Dictionary<string, object>
             {
                 { nameof(drive.Name), drive.Name },
                 { nameof(drive.DriveFormat), drive.DriveFormat },

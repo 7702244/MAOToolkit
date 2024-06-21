@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -31,7 +30,7 @@ namespace MAOToolkit.Extensions
 
             return type.IsPrimitive
               || type.IsValueType
-              || type.Equals(typeof(string));
+              || type == typeof(string);
         }
 
         /// <summary>

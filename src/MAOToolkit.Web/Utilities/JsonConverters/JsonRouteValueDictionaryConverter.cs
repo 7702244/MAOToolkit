@@ -40,7 +40,7 @@ namespace MAOToolkit.Utilities.JsonConverters
 
                 // Get the value.
                 reader.Read();
-                StringValues value = stringValuesConverter.Read(ref reader, typeof(StringValues), options);
+                var value = stringValuesConverter.Read(ref reader, typeof(StringValues), options);
 
                 // Add to dictionary.
                 routeValues.Add(propertyName, value);

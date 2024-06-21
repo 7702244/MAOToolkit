@@ -20,10 +20,8 @@ namespace MAOToolkit.Extensions
                 int read = await reader.ReadAsync(chars, 0, chars.Length);
                 return new string(chars.AsSpan(0, read));
             }
-            else
-            {
-                return await reader.ReadToEndAsync();
-            }
+
+            return await reader.ReadToEndAsync();
         }
     }
 }

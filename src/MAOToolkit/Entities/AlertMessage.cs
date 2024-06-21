@@ -4,10 +4,10 @@ namespace MAOToolkit.Entities
     {
         public enum Kind
         {
-            success,
-            info,
-            warning,
-            danger
+            Success,
+            Info,
+            Warning,
+            Danger
         }
 
         public Kind Type { get; init; }

@@ -20,9 +20,7 @@ namespace MAOToolkit.Extensions
         {
             if (String.IsNullOrEmpty(keywords))
                 return HtmlString.Empty;
-            return new HtmlString(
-                String.Format("<meta name=\"keywords\" content=\"{0}\" />",
-                              htmlHelper.Encode(keywords)));
+            return new HtmlString($"<meta name=\"keywords\" content=\"{htmlHelper.Encode(keywords)}\" />");
         }
 
         /// <summary>
@@ -35,9 +33,7 @@ namespace MAOToolkit.Extensions
         {
             if (String.IsNullOrEmpty(description))
                 return HtmlString.Empty;
-            return new HtmlString(
-                String.Format("<meta name=\"description\" content=\"{0}\" />",
-                              htmlHelper.Encode(description)));
+            return new HtmlString($"<meta name=\"description\" content=\"{htmlHelper.Encode(description)}\" />");
         }
 
         /// <summary>
@@ -50,9 +46,7 @@ namespace MAOToolkit.Extensions
         {
             if (String.IsNullOrEmpty(canonical))
                 return HtmlString.Empty;
-            return new HtmlString(
-                String.Format("<link rel=\"canonical\" href=\"{0}\" />",
-                              htmlHelper.Encode(canonical)));
+            return new HtmlString($"<link rel=\"canonical\" href=\"{htmlHelper.Encode(canonical)}\" />");
         }
 
         /// <summary>
@@ -76,7 +70,7 @@ namespace MAOToolkit.Extensions
 
             if (!String.IsNullOrEmpty(description))
             {
-                return new HtmlString(String.Format("<span class=\"bi bi-question-circle-fill text-muted\" style=\"cursor:pointer\" data-bs-toggle=\"tooltip\" title=\"{0}\" tabindex=\"0\"></span>", description));
+                return new HtmlString($"<span class=\"bi bi-question-circle-fill text-muted\" style=\"cursor:pointer\" data-bs-toggle=\"tooltip\" title=\"{description}\" tabindex=\"0\"></span>");
             }
 
             return HtmlString.Empty;

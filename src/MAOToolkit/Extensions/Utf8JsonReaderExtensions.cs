@@ -13,7 +13,7 @@ namespace MAOToolkit.Extensions
                 return null;
             }
 
-            ReadOnlySpan<byte> utf8Bytes = jsonReader.HasValueSequence ? jsonReader.ValueSequence.ToArray() : jsonReader.ValueSpan;
+            var utf8Bytes = jsonReader.HasValueSequence ? jsonReader.ValueSequence.ToArray() : jsonReader.ValueSpan;
 
             return System.Text.RegularExpressions.Regex.Unescape(Encoding.UTF8.GetString(utf8Bytes));
         }

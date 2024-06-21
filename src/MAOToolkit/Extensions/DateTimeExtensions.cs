@@ -9,7 +9,7 @@ namespace MAOToolkit.Extensions
 
         public static double ToUnixTimestamp(this DateTime value)
         {
-            TimeSpan diff = value.ToUniversalTime() - DateTime.UnixEpoch;
+            var diff = value.ToUniversalTime() - DateTime.UnixEpoch;
             return Math.Floor(diff.TotalSeconds);
         }
 

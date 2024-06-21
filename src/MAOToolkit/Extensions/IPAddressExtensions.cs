@@ -20,19 +20,19 @@ namespace MAOToolkit.Extensions
 
             byte[] octets = ipAddress.GetAddressBytes();
 
-            var is24BitBlock = octets[0] == 10;
+            bool is24BitBlock = octets[0] == 10;
             if (is24BitBlock)
                 return true; // Return to prevent further processing
 
-            var is20BitBlock = octets[0] == 172 && octets[1] >= 16 && octets[1] <= 31;
+            bool is20BitBlock = octets[0] == 172 && octets[1] >= 16 && octets[1] <= 31;
             if (is20BitBlock)
                 return true; // Return to prevent further processing
 
-            var is16BitBlock = octets[0] == 192 && octets[1] == 168;
+            bool is16BitBlock = octets[0] == 192 && octets[1] == 168;
             if (is16BitBlock)
                 return true; // Return to prevent further processing
 
-            var isLinkLocalAddress = octets[0] == 169 && octets[1] == 254;
+            bool isLinkLocalAddress = octets[0] == 169 && octets[1] == 254;
             return isLinkLocalAddress;
         }
 

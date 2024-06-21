@@ -26,15 +26,13 @@ namespace MAOToolkit.Extensions
             }
 
             // The `leaveOpen` should be `true` if there's another function going to be invoked AFTER this.
-            using (var reader = new StreamReader(
+            using var reader = new StreamReader(
                 stream,
                 Encoding.UTF8,
                 detectEncodingFromByteOrderMarks: false,
                 bufferSize: 1024,
-                leaveOpen: false))
-            {
-                return await reader.ReadWithLimitAsync(charsLimit);
-            }
+                leaveOpen: false);
+            return await reader.ReadWithLimitAsync(charsLimit);
         }
     }
 }
