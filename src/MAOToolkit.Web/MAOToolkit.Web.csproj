@@ -7,7 +7,7 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 
 		<!-- The current Nuget Package Version is configured in the file dotnet-release.yml	-->
-		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyy.MMdd.hhmm-ss))</BuildNumber>
+		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyy.MMdd.hhmm))</BuildNumber>
 		<VersionPrefix>2.$(BuildNumber)</VersionPrefix>
 		
 		<PackageId>MAOToolkit.Web</PackageId>
