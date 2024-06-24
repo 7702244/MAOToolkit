@@ -87,7 +87,7 @@ jobs:
         run: echo "date_version=$(date +'%Y.%m%d.%H%M-%S')" >> $GITHUB_OUTPUT
 
       - name: Create the package
-        run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal /p:PackageVersion=1.${{ steps.date_version.outputs.date_version }}
+        run: dotnet pack $SOLUTION --configuration Release --no-restore --no-build --verbosity normal /p:PackageVersion=2.${{ steps.date_version.outputs.date_version }}
 
       - name: Get current date
         id: date
