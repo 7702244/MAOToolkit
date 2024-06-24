@@ -6,7 +6,8 @@
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 
-		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyMM.ddhh.mmss))</BuildNumber>
+		<!-- The current Nuget Package Version is configured in the file dotnet-release.yml	-->
+		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyy.MMdd.hhmm-ss))</BuildNumber>
 		<VersionPrefix>1.$(BuildNumber)</VersionPrefix>
 		
 		<PackageId>MAOToolkit.Web</PackageId>
