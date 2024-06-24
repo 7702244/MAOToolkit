@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 
-		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyMM.ddhh.mmss))</BuildNumber>
+		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyy.MMdd.hhmm-ss))</BuildNumber>
 		<VersionPrefix>1.$(BuildNumber)</VersionPrefix>
 
 		<PackageId>MAOToolkit</PackageId>
