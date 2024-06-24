@@ -7,7 +7,7 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 
 		<BuildNumber>$([System.DateTime]::UtcNow.ToString(yyyy.MMdd.hhmm-ss))</BuildNumber>
-		<VersionPrefix>1.$(BuildNumber)</VersionPrefix>
+		<VersionPrefix>2.$(BuildNumber)</VersionPrefix>
 
 		<PackageId>MAOToolkit</PackageId>
 		<PackageIcon>icon.png</PackageIcon>
