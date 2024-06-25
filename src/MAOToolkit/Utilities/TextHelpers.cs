@@ -58,14 +58,14 @@ namespace MAOToolkit.Utilities
                 throw new ArgumentException("String can't be null or empty.", nameof(end));
             }
 
-            int startIndex = str.IndexOf(start);
+            int startIndex = str.IndexOf(start, StringComparison.OrdinalIgnoreCase);
 
             // Check if the start string was found.
-            if (startIndex > -1)
+            if (startIndex >= 0)
             {
                 startIndex += start.Length;
 
-                int endIndex = str.IndexOf(end, startIndex);
+                int endIndex = str.IndexOf(end, startIndex, StringComparison.OrdinalIgnoreCase);
                 if (endIndex > startIndex)
                 {
                     return str.Substring(startIndex, endIndex - startIndex);
@@ -112,7 +112,7 @@ namespace MAOToolkit.Utilities
         /// <returns></returns>
         public static string BytesToString(long byteCount)
         {
-            string[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
+            string[] suffix = ["B", "KB", "MB", "GB", "TB", "PB", "EB"]; //Longs run out around EB
 
             if (byteCount == 0)
                 return "0 " + suffix[0];
@@ -120,7 +120,7 @@ namespace MAOToolkit.Utilities
             long bytes = Math.Abs(byteCount);
             int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
             double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-            return (Math.Sign(byteCount) * num).ToString() + " " + suffix[place];
+            return (Math.Sign(byteCount) * num) + " " + suffix[place];
         }
 
         /// <summary>
@@ -151,15 +151,12 @@ namespace MAOToolkit.Utilities
                 throw new ArgumentException("Negative values not allowed.", nameof(length));
             }
 
-            if (nonWordCharacters is null)
-            {
-                nonWordCharacters = new HashSet<char> { ',', '.', ':', ';' };
-            }
-
             if (length >= str.Length)
             {
                 return str;
             }
+            
+            nonWordCharacters ??= [',', '.', ':', ';'];
 
             int end = length;
 
@@ -190,39 +187,87 @@ namespace MAOToolkit.Utilities
                 end = length;
             }
 
-            return String.Concat(str.AsSpan(0, end), "...");
+            return String.Concat(str.AsSpan(0, end), "…");
         }
-
+        
         /// <summary>
-        /// Get the first several words from the summary and truncates long words.
+        /// Gets the maximum number of first words from the text, truncates long words and adds "…" to the end if there was a truncation.
         /// </summary>
         /// <param name="str">Source string.</param>
-        /// <param name="numberWords">Maximum number of words in result string. 0 - without limit.</param>
+        /// <param name="maxWords">Maximum number of words in result string. 0 - without limit.</param>
         /// <param name="maxWordLength">Maximum length of each word in result string. 0 - without limit.</param>
-        public static string TruncateText(string? str, int numberWords, int maxWordLength = 0)
+        /// <param name="truncateWith">The string that will be added when text or a word is truncated. Defaults: "…".</param>
+        /// <param name="additionalDelimiters">Additional word delimiters.</param>
+        /// <returns>In the output line: line translations and all additional word delimiters remain as in the original text.</returns>
+        public static string TruncateText(
+            string? str, 
+            int maxWords = 0, 
+            int maxWordLength = 0,
+            string truncateWith = "…", 
+            string additionalDelimiters = ",.;:!?()[]{}")
         {
             if (String.IsNullOrEmpty(str))
             {
                 return String.Empty;
             }
+            
+            return new string(IterateChars().ToArray());
 
-            // You cannot do Trim for words, because this will clean up the translations of the lines.
-            string[] words = str.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            bool IsSeparator(char c) => Char.IsSeparator(c) || additionalDelimiters.Contains(c);
 
-            for (int i = 0; i < words.Length; i++)
+            IEnumerable<char> IterateChars()
             {
-                if (numberWords > 0 && i == numberWords)
-                {
-                    break;
-                }
+                yield return str[0];
+                
+                int words = 1;
+                int wordLength = 0;
 
-                if (maxWordLength > 0 && words[i].Length > maxWordLength)
+                for (int i = 1; i < str.Length; i++)
                 {
-                    words[i] = String.Concat(words[i].AsSpan(0, maxWordLength), "...");
+                    if (IsSeparator(str[i]) && !IsSeparator(str[i - 1]))
+                    {
+                        if (words == maxWords)
+                        {
+                            // Avoid three dots when abbreviating words and shortening the line.
+                            if (maxWordLength > 0 && wordLength >= maxWordLength)
+                            {
+                                break;
+                            }
+                            
+                            if (!String.IsNullOrEmpty(truncateWith))
+                            {
+                                foreach (char c in truncateWith)
+                                    yield return c;
+                            }
+
+                            break;
+                        }
+
+                        words++;
+                        wordLength = 0;
+                    }
+                    else
+                    {
+                        wordLength++;
+                    }
+
+                    if (maxWordLength > 0 && wordLength >= maxWordLength)
+                    {
+                        if (wordLength == maxWordLength)
+                        {
+                            if (!String.IsNullOrEmpty(truncateWith))
+                            {
+                                foreach (char c in truncateWith)
+                                    yield return c;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        yield return str[i];
+                    }
                 }
             }
-
-            return String.Join(' ', words);
         }
 
         /// <summary>
@@ -234,28 +279,27 @@ namespace MAOToolkit.Utilities
         /// <param name="urlWordsScore">The maximum number of occurrences URL links. 0 - do not check.</param>
         public static bool IsSpam(string? str, IEnumerable<string> spamWords, int spamWordsScore = 3, int urlWordsScore = 1)
         {
-            if (!String.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrWhiteSpace(str))
             {
-                // If the links are more than urlWordsScore, it is spam.
-                if (urlWordsScore > 0 && RegularExpressions.URL.Matches(str).Count >= urlWordsScore)
-                {
-                    return true;
-                }
-
-                // If spamWords is greater than spamWordsScore, it is spam.
-                if (spamWordsScore > 0 && spamWords.Any())
-                {
-                    int score = Words.Matches(str)
-                        .Count(match => spamWords.Any(word => match.Value.Contains(word, StringComparison.OrdinalIgnoreCase)));
-
-                    if (score >= spamWordsScore)
-                    {
-                        return true;
-                    }
-                }
+                return false;
             }
+            
+            // If the links are more than urlWordsScore, it is spam.
+            if (urlWordsScore > 0 && RegularExpressions.URL.Matches(str).Count >= urlWordsScore)
+            {
+                return true;
+            }
+            
+            if (spamWordsScore <= 0 || !spamWords.Any())
+            {
+                return false;
+            }
+            
+            // If spamWords is greater than spamWordsScore, it is spam.
+            int score = Words.Matches(str)
+                .Count(match => spamWords.Any(word => match.Value.Contains(word, StringComparison.OrdinalIgnoreCase)));
 
-            return false;
+            return score >= spamWordsScore;
         }
 
         public static bool IsValidEmail(string email)
@@ -280,11 +324,11 @@ namespace MAOToolkit.Utilities
 
             try
             {
-                var emails = new HashSet<string>(str.Split(new char[] { ';', ',', '/', '\\', '|', '&' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+                var emails = new HashSet<string>(str.Split(new[] { ';', ',', '/', '\\', '|', '&' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
                 if (removeInvalid)
                 {
-                    emails.RemoveWhere(x => IsValidEmail(x));
+                    emails.RemoveWhere(x => !IsValidEmail(x));
                 }
 
                 return String.Join(',', emails);
@@ -298,10 +342,7 @@ namespace MAOToolkit.Utilities
         /// <summary>
         /// Returns a copy of string converted to HTML markup.
         /// </summary>
-        public static string ToHtml(string? s)
-        {
-            return ToHtml(s, false);
-        }
+        public static string ToHtml(string? s) => ToHtml(s, false);
 
         /// <summary>
         /// Returns a copy of string converted to HTML markup.
