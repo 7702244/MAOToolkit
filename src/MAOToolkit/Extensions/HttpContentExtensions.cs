@@ -15,15 +15,11 @@ namespace MAOToolkit.Extensions
         /// <returns>String representation of HTTP content.</returns>
         public static async Task<string> ReadAsStringAsync(this HttpContent httpContent, int charsLimit)
         {
-            if (httpContent is null)
-                throw new ArgumentNullException(nameof(httpContent));
+            ArgumentNullException.ThrowIfNull(httpContent);
 
+            await httpContent.LoadIntoBufferAsync();
+            
             var stream = await httpContent.ReadAsStreamAsync();
-
-            if (!stream.CanRead)
-            {
-                return (await httpContent.ReadAsStringAsync()).Left(charsLimit);
-            }
 
             // The `leaveOpen` should be `true` if there's another function going to be invoked AFTER this.
             using var reader = new StreamReader(
