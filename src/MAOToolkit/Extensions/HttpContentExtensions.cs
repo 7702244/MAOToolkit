@@ -20,6 +20,8 @@ namespace MAOToolkit.Extensions
             await httpContent.LoadIntoBufferAsync();
             
             var stream = await httpContent.ReadAsStreamAsync();
+            
+            stream.Seek(0, SeekOrigin.Begin);
 
             // The `leaveOpen` should be `true` if there's another function going to be invoked AFTER this.
             using var reader = new StreamReader(
@@ -28,7 +30,11 @@ namespace MAOToolkit.Extensions
                 detectEncodingFromByteOrderMarks: false,
                 bufferSize: 1024,
                 leaveOpen: true);
-            return await reader.ReadWithLimitAsync(charsLimit);
+            string result = await reader.ReadWithLimitAsync(charsLimit);
+
+            stream.Seek(0, SeekOrigin.Begin);
+            
+            return result;
         }
     }
 }
