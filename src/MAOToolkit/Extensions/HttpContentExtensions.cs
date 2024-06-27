@@ -27,7 +27,7 @@ namespace MAOToolkit.Extensions
                 Encoding.UTF8,
                 detectEncodingFromByteOrderMarks: false,
                 bufferSize: 1024,
-                leaveOpen: false);
+                leaveOpen: true);
             return await reader.ReadWithLimitAsync(charsLimit);
         }
     }
