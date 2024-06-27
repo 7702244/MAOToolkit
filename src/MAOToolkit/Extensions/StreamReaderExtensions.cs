@@ -11,8 +11,7 @@ namespace MAOToolkit.Extensions
         /// <returns>String representation of readed stream.</returns>
         public static async ValueTask<string> ReadWithLimitAsync(this StreamReader reader, int charsLimit)
         {
-            if (reader is null)
-                throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
             if (charsLimit > 0)
             {
