@@ -117,8 +117,7 @@ namespace MAOToolkit.Extensions
         /// <returns>String representation of Request.Body.</returns>
         public static async ValueTask<string> GetRawBodyStringAsync(this HttpRequest request, int charsLimit = 0)
         {
-            if (request is null)
-                throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             string body = String.Empty;
 

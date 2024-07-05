@@ -16,12 +16,17 @@ namespace MAOToolkit.Extensions
         public static async Task<string> ReadAsStringAsync(this HttpContent httpContent, int charsLimit)
         {
             ArgumentNullException.ThrowIfNull(httpContent);
-
-            await httpContent.LoadIntoBufferAsync();
             
             var stream = await httpContent.ReadAsStreamAsync();
-            
-            stream.Seek(0, SeekOrigin.Begin);
+            if (!stream.CanRead)
+            {
+                return "<UNREADABLE_BODY_STREAM>";
+            }
+
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
 
             // The `leaveOpen` should be `true` if there's another function going to be invoked AFTER this.
             using var reader = new StreamReader(
@@ -32,7 +37,10 @@ namespace MAOToolkit.Extensions
                 leaveOpen: true);
             string result = await reader.ReadWithLimitAsync(charsLimit);
 
-            stream.Seek(0, SeekOrigin.Begin);
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
             
             return result;
         }
