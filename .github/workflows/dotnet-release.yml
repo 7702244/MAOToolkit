@@ -48,12 +48,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
     
       - name: "⚒️ Setup .NET"
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
 
       - name: "✅ Check .NET Version"
         run: echo '.NET version:' $(dotnet --version)
@@ -77,7 +77,7 @@ jobs:
       - name: "🖨️ Print changelog to console"
         run: cat CHANGELOG.md
       - name: "📤 Upload changelog"
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v4
         with:
           name: "Changelog"
           path: CHANGELOG.md
