@@ -71,8 +71,7 @@ jobs:
       - name: "✏️ Generate release changelog"
         uses: heinrichreimer/github-changelog-generator-action@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
-          stripGeneratorNotice: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "🖨️ Print changelog to console"
         run: cat CHANGELOG.md
