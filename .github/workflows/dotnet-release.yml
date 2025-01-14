@@ -69,7 +69,7 @@ jobs:
 
       # https://github.com/heinrichreimer/action-github-changelog-generator
       - name: "✏️ Generate release changelog"
-        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        uses: heinrichreimer/github-changelog-generator-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }} 
           stripGeneratorNotice: true
