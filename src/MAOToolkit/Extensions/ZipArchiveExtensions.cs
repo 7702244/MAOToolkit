@@ -6,24 +6,18 @@ namespace MAOToolkit.Extensions
     {
         public static void CreateEntryFromAny(this ZipArchive archive, string sourcePath, string entryName = "")
         {
-            var fileName = Path.GetFileName(sourcePath);
+            string fileName = Path.GetFileName(sourcePath);
+            string entryFullName = Path.Combine(entryName, fileName);
+            
             if (File.GetAttributes(sourcePath).HasFlag(FileAttributes.Directory))
             {
-                archive.CreateEntryFromDirectory(sourcePath, Path.Combine(entryName, fileName));
+                archive.CreateEntryFromDirectory(sourcePath, entryFullName);
             }
             else
             {
-                // Causes an error for ReadOnly files.
-                //archive.CreateEntryFromFile(sourcePath, Path.Combine(entryName, fileName), CompressionLevel.Optimal);
-
-                var entry = archive.CreateEntry(Path.Combine(entryName, fileName), CompressionLevel.Optimal);
-                entry.LastWriteTime = File.GetLastWriteTime(sourcePath);
-
-                using (var fileStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (var entryStream = entry.Open())
-                {
-                    fileStream.CopyTo(entryStream);
-                }
+                archive.GetEntry(entryFullName)?.Delete();
+                
+                archive.CreateEntryFromFile(sourcePath, entryFullName, CompressionLevel.Optimal);
             }
         }
 
