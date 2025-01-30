@@ -74,6 +74,76 @@ namespace MAOToolkit.Utilities
 
             return String.Empty;
         }
+        
+        /// <summary>
+        /// Replaces visually similar characters with their Latin counterparts.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ReplaceVisualCyrToLat(string input)
+        {
+            // Use StringBuilder to work efficiently with strings.
+            var output = new StringBuilder(input.Length);
+
+            // Go through each character of the input string.
+            foreach (char c in input)
+            {
+                // Use switch to save memory.
+                output.Append(c switch
+                {
+                    'а' => 'a', 'А' => 'A',
+                    /*'в' => 'b',*/ 'В' => 'B',
+                    'е' => 'e', 'Е' => 'E',
+                    'к' => 'k', 'К' => 'K',
+                    /*'м' => 'm',*/ 'М' => 'M',
+                    /*'н' => 'h',*/ 'Н' => 'H',
+                    'о' => 'o', 'О' => 'O',
+                    'р' => 'p', 'Р' => 'P',
+                    'с' => 'c', 'С' => 'C',
+                    /*'т' => 't',*/ 'Т' => 'T',
+                    'у' => 'y', 'У' => 'Y',
+                    'х' => 'x', 'Х' => 'X',
+                    _ => c // If the character is not found, we return it unchanged.
+                });
+            }
+
+            return output.ToString();
+        }
+        
+        /// <summary>
+        /// Replaces visually similar characters with their Cyrillic counterparts.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ReplaceVisualLatToCyr(string input)
+        {
+            // Use StringBuilder to work efficiently with strings.
+            var output = new StringBuilder(input.Length);
+
+            // Go through each character of the input string.
+            foreach (char c in input)
+            {
+                // Use switch to save memory.
+                output.Append(c switch
+                {
+                    'a' => 'а', 'A' => 'А',
+                    /*'b' => 'в',*/ 'B' => 'В',
+                    'e' => 'е', 'E' => 'Е',
+                    'k' => 'к', 'K' => 'К',
+                    /*'m' => 'м',*/ 'M' => 'М',
+                    /*'h' => 'н',*/ 'H' => 'Н',
+                    'o' => 'о', 'O' => 'О',
+                    'p' => 'р', 'P' => 'Р',
+                    'c' => 'с', 'C' => 'С',
+                    /*'t' => 'т',*/ 'T' => 'Т',
+                    'y' => 'у', 'Y' => 'У',
+                    'x' => 'х', 'X' => 'Х',
+                    _ => c // If the character is not found, we return it unchanged.
+                });
+            }
+
+            return output.ToString();
+        }
 
         /// <summary>
         /// Returns words in the case dependent on the given number.
