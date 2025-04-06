@@ -5,9 +5,9 @@ namespace MAOToolkit.Extensions
 {
     public static class QueryableExtensions
     {
-        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> queryable, string orderByProperty, bool desc = false)
+        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string orderByProperty, bool desc = false)
         {
-            string command = desc ? "OrderByDescending" : "OrderBy";
+            string methodName = desc ? "OrderByDescending" : "OrderBy";
             var type = typeof(T);
             var property = type.GetProperty(orderByProperty, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             ArgumentNullException.ThrowIfNull(property);
@@ -15,8 +15,20 @@ namespace MAOToolkit.Extensions
             var parameter = Expression.Parameter(type, "p");
             var propertyAccess = Expression.MakeMemberAccess(parameter, property);
             var orderByExpression = Expression.Lambda(propertyAccess, parameter);
-            var resultExpression = Expression.Call(typeof(Queryable), command, new Type[] { type, property.PropertyType }, queryable.Expression, Expression.Quote(orderByExpression));
-            return (IOrderedQueryable<T>)queryable.Provider.CreateQuery<T>(resultExpression);
+            
+            object? result = typeof(Queryable).GetMethods().Single(method => method.Name == methodName
+                && method.IsGenericMethodDefinition
+                && method.GetGenericArguments().Length == 2
+                && method.GetParameters().Length == 2)
+            .MakeGenericMethod(typeof(T), property.PropertyType)
+            .Invoke(null, [source, orderByExpression]);
+
+            if (result is null)
+            {
+                throw new InvalidOperationException();
+            }
+            
+            return (IOrderedQueryable<T>)result;
         }
 
         public static IQueryable<T> WhereAny<T>(this IQueryable<T> queryable, params Expression<Func<T, bool>>[] predicates)
