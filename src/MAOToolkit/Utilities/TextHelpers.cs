@@ -620,23 +620,36 @@ namespace MAOToolkit.Utilities
         /// </summary>
         public static string GetPropertyPath<T>(Expression<Func<T, object?>> expression)
         {
-            var propertyExpression = expression.Body;
+            ArgumentNullException.ThrowIfNull(expression);
 
-            var memberExpr = propertyExpression as MemberExpression;
-            if (memberExpr == null)
+            var path = new StringBuilder();
+            var current = expression.Body;
+
+            // Handle type conversion (e.g., when property is a value type)
+            if (current is UnaryExpression unary && unary.NodeType == ExpressionType.Convert)
             {
-                if (propertyExpression is UnaryExpression unaryExpr && unaryExpr.NodeType == ExpressionType.Convert)
+                current = unary.Operand;
+            }
+
+            // Traverse the chain of MemberExpressions
+            while (current is MemberExpression member)
+            {
+                if (path.Length > 0)
                 {
-                    memberExpr = unaryExpr.Operand as MemberExpression;
+                    path.Insert(0, ".");
                 }
+
+                path.Insert(0, member.Member.Name);
+                current = member.Expression;
             }
 
-            if (memberExpr != null && memberExpr.Member.MemberType == MemberTypes.Property)
+            // Verify we've reached the lambda parameter (x => x.Prop...)
+            if (current is not ParameterExpression)
             {
-                return memberExpr.Member.Name;
+                throw new ArgumentException("The expression is not a valid member access expression.", nameof(expression));
             }
-            
-            throw new ArgumentException("No property reference expression was found.", nameof(expression));
+
+            return path.ToString();
         }
 
         #endregion
