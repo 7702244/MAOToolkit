@@ -8,14 +8,26 @@ namespace MAOToolkit.Extensions
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string orderByProperty, bool desc = false)
         {
             string methodName = desc ? "OrderByDescending" : "OrderBy";
-            var type = typeof(T);
-            var property = type.GetProperty(orderByProperty, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            ArgumentNullException.ThrowIfNull(property);
 
+            var type = typeof(T);
             var parameter = Expression.Parameter(type, "p");
-            var propertyAccess = Expression.MakeMemberAccess(parameter, property);
-            var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+            PropertyInfo? property = null;
+            Expression propertyAccess = parameter;
+            foreach (string propertyName in orderByProperty.Split('.',  StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                property = type.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                if (property == null)
+                {
+                    break;
+                }
+                
+                type = property.PropertyType;
+                propertyAccess = Expression.MakeMemberAccess(propertyAccess, property);
+            }
             
+            ArgumentNullException.ThrowIfNull(property);
+            
+            var orderByExpression = Expression.Lambda(propertyAccess, parameter);
             object? result = typeof(Queryable).GetMethods().Single(method => method.Name == methodName
                 && method.IsGenericMethodDefinition
                 && method.GetGenericArguments().Length == 2
