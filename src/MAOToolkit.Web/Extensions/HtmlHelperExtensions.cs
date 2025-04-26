@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
+using MAOToolkit.Utilities;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -74,6 +76,32 @@ namespace MAOToolkit.Extensions
             }
 
             return HtmlString.Empty;
+        }
+        
+        /// <summary>
+        /// Insert SortLink for property from ModelMetadata.
+        /// </summary>
+        public static IHtmlContent SortLinkFor<TModelItem>(this IHtmlHelper<IEnumerable<TModelItem>> htmlHelper, Expression<Func<TModelItem, object?>> expression)
+        {
+            string name = TextHelpers.GetDisplayName(expression);
+            string propertyPath = TextHelpers.GetPropertyPath(expression);
+        
+            var orderBy = htmlHelper.ViewContext.HttpContext.Request.Query["orderBy"];
+            string linkOrderBy = orderBy == propertyPath ? propertyPath + "_desc" : propertyPath;
+        
+            var result = new StringBuilder();
+            result.Append(htmlHelper.ActionLink(name, htmlHelper.ViewContext.RouteData.Values["action"]?.ToString(), htmlHelper.ViewContext.HttpContext.Request.Query.ToRouteValues(new { orderBy = linkOrderBy })).GetString());
+            result.Append("&nbsp;");
+            if (orderBy == propertyPath)
+            {
+                result.Append("<i class=\"bi bi-sort-up-alt\"></i>");
+            }
+            if (orderBy == propertyPath + "_desc")
+            {
+                result.Append("<i class=\"bi bi-sort-down\"></i>");
+            }
+        
+            return new HtmlString(result.ToString());
         }
 
         /// <summary>
