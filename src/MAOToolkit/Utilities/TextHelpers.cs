@@ -614,6 +614,30 @@ namespace MAOToolkit.Utilities
 
             return memberInfo.GetCustomAttribute<DisplayAttribute>()?.GetName() ?? memberInfo.Name;
         }
+        
+        /// <summary>
+        /// Gets fullpath of the selected property.
+        /// </summary>
+        public static string GetPropertyPath<T>(Expression<Func<T, object?>> expression)
+        {
+            var propertyExpression = expression.Body;
+
+            var memberExpr = propertyExpression as MemberExpression;
+            if (memberExpr == null)
+            {
+                if (propertyExpression is UnaryExpression unaryExpr && unaryExpr.NodeType == ExpressionType.Convert)
+                {
+                    memberExpr = unaryExpr.Operand as MemberExpression;
+                }
+            }
+
+            if (memberExpr != null && memberExpr.Member.MemberType == MemberTypes.Property)
+            {
+                return memberExpr.Member.Name;
+            }
+            
+            throw new ArgumentException("No property reference expression was found.", nameof(expression));
+        }
 
         #endregion
     }
