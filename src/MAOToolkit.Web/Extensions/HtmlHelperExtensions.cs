@@ -81,9 +81,12 @@ namespace MAOToolkit.Extensions
         /// <summary>
         /// Insert SortLink for property from ModelMetadata.
         /// </summary>
-        public static IHtmlContent SortLinkFor<TModelItem>(this IHtmlHelper<IEnumerable<TModelItem>> htmlHelper, Expression<Func<TModelItem, object?>> expression)
+        public static IHtmlContent SortLinkFor<TModelItem>(
+            this IHtmlHelper<IEnumerable<TModelItem>> htmlHelper,
+            Expression<Func<TModelItem, object?>> expression,
+            string? title = null)
         {
-            string name = TextHelpers.GetDisplayName(expression);
+            string name = !String.IsNullOrEmpty(title) ? title : TextHelpers.GetDisplayName(expression);
             string propertyPath = TextHelpers.GetPropertyPath(expression);
         
             var orderBy = htmlHelper.ViewContext.HttpContext.Request.Query["orderBy"];
