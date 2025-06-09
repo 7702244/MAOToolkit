@@ -20,7 +20,7 @@ namespace MAOToolkit.Utilities
                 lockHandle.Dispose();
                 if (asyncLock.IsFree)
                 {
-                    _locks.TryRemove(key, out _);
+                    _locks.TryRemove(new KeyValuePair<object, AsyncLock>(key, asyncLock));
                 }
             }
             catch
@@ -51,8 +51,14 @@ namespace MAOToolkit.Utilities
                 {
                     if (Interlocked.Exchange(ref _disposed, 1) == 0)
                     {
-                        Interlocked.Decrement(ref parent._refCount);
-                        parent._semaphore.Release();
+                        try
+                        {
+                            Interlocked.Decrement(ref parent._refCount);
+                        }
+                        finally
+                        {
+                            parent._semaphore.Release();
+                        }
                     }
                 }
             }
