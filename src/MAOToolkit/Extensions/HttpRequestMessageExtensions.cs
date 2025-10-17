@@ -1,52 +1,50 @@
 using System.Text;
 
-namespace MAOToolkit.Extensions
+namespace MAOToolkit.Extensions;
+
+/// <summary>
+/// Extension methods for HTTP Request Message.
+/// </summary>
+public static class HttpRequestMessageExtensions
 {
+    private const int MaxBodyLength = 8000;
+    private const char SPACE = ' ';
+
     /// <summary>
-    /// Extension methods for HTTP Request Message.
+    /// Dump the raw http request to a string.
     /// </summary>
-    public static class HttpRequestMessageExtensions
+    /// <param name="request">The <see cref="HttpRequestMessage"/> that should be dumped.</param>
+    /// <returns>The raw HTTP request.</returns>
+    public static async Task<string> ToRawAsync(this HttpRequestMessage request)
     {
-        private const int MaxBodyLength = 8000;
-        private const char SPACE = ' ';
+        ArgumentNullException.ThrowIfNull(request);
 
-        /// <summary>
-        /// Dump the raw http request to a string.
-        /// </summary>
-        /// <param name="request">The <see cref="HttpRequestMessage"/> that should be dumped.</param>
-        /// <returns>The raw HTTP request.</returns>
-        public static async Task<string> ToRawAsync(this HttpRequestMessage request)
+        var builder = new StringBuilder();
+
+        builder
+            .Append(request.Method.ToString())
+            .Append(SPACE)
+            .Append(request.RequestUri?.ToString())
+            .Append(SPACE)
+            .Append("HTTP/")
+            .AppendLine(request.Version.ToString());
+
+        foreach (var header in request.Headers)
         {
-            if (request is null)
-                throw new ArgumentNullException(nameof(request));
+            builder.Append(header.Key).Append(':').AppendLine(String.Join(',', header.Value));
+        }
 
-            var builder = new StringBuilder();
-
-            builder
-                .Append(request.Method.ToString())
-                .Append(SPACE)
-                .Append(request.RequestUri?.ToString())
-                .Append(SPACE)
-                .Append("HTTP/")
-                .AppendLine(request.Version.ToString());
-
-            foreach (var header in request.Headers)
+        if (request.Content is not null)
+        {
+            foreach (var header in request.Content.Headers)
             {
                 builder.Append(header.Key).Append(':').AppendLine(String.Join(',', header.Value));
             }
 
-            if (request.Content is not null)
-            {
-                foreach (var header in request.Content.Headers)
-                {
-                    builder.Append(header.Key).Append(':').AppendLine(String.Join(',', header.Value));
-                }
-
-                builder.AppendLine();
-                builder.AppendLine(await request.Content.ReadAsStringAsync(MaxBodyLength));
-            }
-
-            return builder.ToString();
+            builder.AppendLine();
+            builder.AppendLine(await request.Content.ReadAsStringAsync(MaxBodyLength));
         }
+
+        return builder.ToString();
     }
 }

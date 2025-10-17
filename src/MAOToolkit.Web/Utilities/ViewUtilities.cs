@@ -7,57 +7,56 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 
-namespace MAOToolkit.Utilities
+namespace MAOToolkit.Utilities;
+
+public interface IViewRenderService
 {
-    public interface IViewRenderService
+    Task<string> RenderToStringAsync(string viewName, object model);
+}
+
+public class ViewRenderService : IViewRenderService
+{
+    private readonly IRazorViewEngine razorViewEngine;
+    private readonly ITempDataProvider tempDataProvider;
+    private readonly IServiceProvider serviceProvider;
+
+    public ViewRenderService(IRazorViewEngine razorViewEngine,
+        ITempDataProvider tempDataProvider,
+        IServiceProvider serviceProvider)
     {
-        Task<string> RenderToStringAsync(string viewName, object model);
+        this.razorViewEngine = razorViewEngine;
+        this.tempDataProvider = tempDataProvider;
+        this.serviceProvider = serviceProvider;
     }
 
-    public class ViewRenderService : IViewRenderService
+    public async Task<string> RenderToStringAsync(string viewName, object model)
     {
-        private readonly IRazorViewEngine razorViewEngine;
-        private readonly ITempDataProvider tempDataProvider;
-        private readonly IServiceProvider serviceProvider;
+        var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
+        var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-        public ViewRenderService(IRazorViewEngine razorViewEngine,
-            ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
+        var viewResult = razorViewEngine.GetView(null, viewName, false);
+        if (!viewResult.Success)
         {
-            this.razorViewEngine = razorViewEngine;
-            this.tempDataProvider = tempDataProvider;
-            this.serviceProvider = serviceProvider;
+            throw new InvalidOperationException($"Couldn't find view '{viewName}'. Searched: {String.Join(',', viewResult.SearchedLocations)}");
         }
 
-        public async Task<string> RenderToStringAsync(string viewName, object model)
+        var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
         {
-            var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
-            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+            Model = model
+        };
 
-            var viewResult = razorViewEngine.GetView(null, viewName, false);
-            if (!viewResult.Success)
-            {
-                throw new InvalidOperationException($"Couldn't find view '{viewName}'. Searched: {String.Join(',', viewResult.SearchedLocations)}");
-            }
-
-            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-            {
-                Model = model
-            };
-
-            await using var writer = new StringWriter();
+        await using var writer = new StringWriter();
             
-            var viewContext = new ViewContext(
-                actionContext,
-                viewResult.View,
-                viewDictionary,
-                new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
-                writer,
-                new HtmlHelperOptions()
-            );
+        var viewContext = new ViewContext(
+            actionContext,
+            viewResult.View,
+            viewDictionary,
+            new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
+            writer,
+            new HtmlHelperOptions()
+        );
 
-            await viewResult.View.RenderAsync(viewContext);
-            return writer.ToString();
-        }
+        await viewResult.View.RenderAsync(viewContext);
+        return writer.ToString();
     }
 }

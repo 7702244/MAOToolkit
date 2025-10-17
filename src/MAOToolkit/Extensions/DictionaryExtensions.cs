@@ -1,49 +1,48 @@
-namespace MAOToolkit.Extensions
+namespace MAOToolkit.Extensions;
+
+public static class DictionaryExtensions
 {
-    public static class DictionaryExtensions
+    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> getter) where TKey : notnull
     {
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> getter) where TKey : notnull
+        if (!dictionary.TryGetValue(key, out TValue? value))
         {
-            if (!dictionary.TryGetValue(key, out TValue? value))
-            {
-                value = getter();
-                dictionary.Add(key, value);
-            }
-
-            return value;
+            value = getter();
+            dictionary.Add(key, value);
         }
 
-        public static async Task<TValue> GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<Task<TValue>> getter) where TKey : notnull
-        {
-            if (!dictionary.TryGetValue(key, out var value))
-            {
-                value = await getter();
-                dictionary.Add(key, value);
-            }
+        return value;
+    }
 
-            return value;
+    public static async Task<TValue> GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<Task<TValue>> getter) where TKey : notnull
+    {
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            value = await getter();
+            dictionary.Add(key, value);
         }
 
-        public static TValue? GetOrAdd<TValue>(this IDictionary<object, object?> dictionary, object key, Func<TValue> getter)
-        {
-            if (!dictionary.TryGetValue(key, out object? value))
-            {
-                value = getter();
-                dictionary.Add(key, value);
-            }
+        return value;
+    }
 
-            return (TValue?)value;
+    public static TValue? GetOrAdd<TValue>(this IDictionary<object, object?> dictionary, object key, Func<TValue> getter)
+    {
+        if (!dictionary.TryGetValue(key, out object? value))
+        {
+            value = getter();
+            dictionary.Add(key, value);
         }
 
-        public static async Task<TValue?> GetOrAdd<TValue>(this IDictionary<object, object?> dictionary, object key, Func<Task<TValue>> getter)
-        {
-            if (!dictionary.TryGetValue(key, out object? value))
-            {
-                value = await getter();
-                dictionary.Add(key, value);
-            }
+        return (TValue?)value;
+    }
 
-            return (TValue?)value;
+    public static async Task<TValue?> GetOrAdd<TValue>(this IDictionary<object, object?> dictionary, object key, Func<Task<TValue>> getter)
+    {
+        if (!dictionary.TryGetValue(key, out object? value))
+        {
+            value = await getter();
+            dictionary.Add(key, value);
         }
+
+        return (TValue?)value;
     }
 }

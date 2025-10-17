@@ -1,17 +1,16 @@
-namespace MAOToolkit.Entities
+namespace MAOToolkit.Entities;
+
+public readonly record struct AlertMessage
 {
-    public readonly record struct AlertMessage
+    public enum Kind
     {
-        public enum Kind
-        {
-            Success,
-            Info,
-            Warning,
-            Danger
-        }
-
-        public Kind Type { get; init; }
-
-        public string Text { get; init; }
+        Success,
+        Info,
+        Warning,
+        Danger
     }
+
+    public Kind Type { get; init; }
+
+    public string Text { get; init; }
 }

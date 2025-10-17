@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace MAOToolkit.Utilities.ActionResults
+namespace MAOToolkit.Utilities.ActionResults;
+
+public class JavaScriptResult : ContentResult
 {
-    public class JavaScriptResult : ContentResult
+    public JavaScriptResult(string content)
     {
-        public JavaScriptResult(string content)
-        {
-            Content = content;
-            ContentType = "application/javascript; charset=utf-8";
-        }
+        Content = content;
+        ContentType = "application/javascript; charset=utf-8";
     }
 }
