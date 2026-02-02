@@ -651,6 +651,50 @@ public static class TextHelpers
 
         return path.ToString();
     }
+    
+    /// <summary>
+    /// Expands macros in the specified template string.
+    /// Macros are defined as placeholders in the form <c>{MacroName}</c> and are
+    /// replaced with corresponding values from the provided dictionary.
+    /// The method performs a single linear pass over the template using
+    /// <see cref="ReadOnlySpan{Char}"/> to minimize allocations and avoid regular
+    /// expressions, making it suitable for performance-critical scenarios.
+    /// Unknown macros are left unchanged.
+    /// </summary>
+    /// <param name="template">The template string containing macro placeholders.</param>
+    /// <param name="values">
+    /// A dictionary mapping macro names to their replacement values.
+    /// </param>
+    /// <returns>
+    /// A new string with all resolvable macros expanded.
+    /// </returns>
+    public static string FillTemplate(
+        string template,
+        IReadOnlyDictionary<string, string> values)
+    {
+        var sb = new StringBuilder(template.Length);
+        var span = template.AsSpan();
+
+        for (int i = 0; i < span.Length; i++)
+        {
+            if (span[i] == '{')
+            {
+                int end = span.Slice(i + 1).IndexOf('}');
+                if (end >= 0)
+                {
+                    var key = span.Slice(i + 1, end);
+                    if (values.TryGetValue(key.ToString(), out string? value))
+                    {
+                        sb.Append(value);
+                        i += end + 1;
+                        continue;
+                    }
+                }
+            }
+            sb.Append(span[i]);
+        }
+        return sb.ToString();
+    }
 
     #endregion
 }
