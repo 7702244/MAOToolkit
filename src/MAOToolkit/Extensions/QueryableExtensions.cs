@@ -133,20 +133,12 @@ public static class QueryableExtensions
             parameter));
     }
 
-    private sealed class ParameterSubstitutionVisitor : ExpressionVisitor
+    private sealed class ParameterSubstitutionVisitor(ParameterExpression source, ParameterExpression destination)
+        : ExpressionVisitor
     {
-        private readonly ParameterExpression _destination;
-        private readonly ParameterExpression _source;
-
-        public ParameterSubstitutionVisitor(ParameterExpression source, ParameterExpression destination)
-        {
-            _source = source;
-            _destination = destination;
-        }
-
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            return ReferenceEquals(node, _source) ? _destination : base.VisitParameter(node);
+            return ReferenceEquals(node, source) ? destination : base.VisitParameter(node);
         }
     }
 }
