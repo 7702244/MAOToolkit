@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace MAOToolkit.Extensions;
@@ -18,30 +17,60 @@ public static class EnumerableExtensions
         }
         return source;
     }
-        
-    public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, string orderByProperty, bool desc = false)
+    
+    /// <summary>
+    /// Performs dynamic sorting of a sequence using the specified property path.
+    /// Supports nested properties and safely handles intermediate <c>null</c> values.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+    /// <param name="source">The source sequence to sort.</param>
+    /// <param name="orderByProperty">
+    /// The property path to sort by.
+    /// Nested properties can be specified using dot notation,
+    /// for example: <c>"Name"</c> or <c>"Report.Impressions"</c>.
+    /// </param>
+    /// <param name="desc">
+    /// <c>true</c> to sort in descending order;
+    /// otherwise, <c>false</c> to sort in ascending order.
+    /// </param>
+    /// <returns>
+    /// An <see cref="IOrderedEnumerable{T}"/> whose elements are sorted
+    /// according to the specified property.
+    /// </returns>
+    public static IOrderedEnumerable<T> OrderBy<T>(
+        this IEnumerable<T> source,
+        string orderByProperty,
+        bool desc = false)
     {
-        string methodName = desc ? "OrderByDescending" : "OrderBy";
-        var type = typeof(T);
-        var property = type.GetProperty(orderByProperty, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-        ArgumentNullException.ThrowIfNull(property);
+        var accessor = CreateAccessor<T>(orderByProperty);
 
-        var parameter = Expression.Parameter(type, "p");
-        var propertyAccess = Expression.MakeMemberAccess(parameter, property);
-        var orderByExpression = Expression.Lambda(propertyAccess, parameter);
-            
-        object? result = typeof(Enumerable).GetMethods().Single(method => method.Name == methodName
-                                                                          && method.IsGenericMethodDefinition
-                                                                          && method.GetGenericArguments().Length == 2
-                                                                          && method.GetParameters().Length == 2)
-            .MakeGenericMethod(typeof(T), property.PropertyType)
-            .Invoke(null, [source, orderByExpression.Compile()]);
+        return desc
+            ? source.OrderByDescending(accessor)
+            : source.OrderBy(accessor);
+    }
 
-        if (result is null)
+    private static Func<T, object?> CreateAccessor<T>(string propertyPath)
+    {
+        string[] properties = propertyPath.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        return item =>
         {
-            throw new InvalidOperationException();
-        }
-            
-        return (IOrderedEnumerable<T>)result;
+            object? value = item;
+
+            foreach (string propertyName in properties)
+            {
+                if (value == null)
+                    return null;
+
+                var property = value.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (property == null)
+                    throw new ArgumentException($"Property '{propertyName}' not found.");
+
+                value = property.GetValue(value);
+            }
+
+            return value;
+        };
     }
 }
