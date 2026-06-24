@@ -682,17 +682,42 @@ public static class TextHelpers
                 int end = span.Slice(i + 1).IndexOf('}');
                 if (end >= 0)
                 {
-                    var key = span.Slice(i + 1, end);
+                    var macro = span.Slice(i + 1, end);
+
+                    ReadOnlySpan<char> key = macro;
+                    ReadOnlySpan<char> format = default;
+
+                    int colon = macro.IndexOf(':');
+                    if (colon >= 0)
+                    {
+                        key = macro[..colon];
+                        format = macro[(colon + 1)..];
+                    }
+
                     if (values.TryGetValue(key.ToString(), out string? value))
                     {
+                        if (!format.IsEmpty)
+                        {
+                            if (format.Equals("upper".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                value = value.ToUpperInvariant();
+                            }
+                            else if (format.Equals("lower".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                value = value.ToLowerInvariant();
+                            }
+                        }
+
                         sb.Append(value);
                         i += end + 1;
                         continue;
                     }
                 }
             }
+
             sb.Append(span[i]);
         }
+
         return sb.ToString();
     }
 
