@@ -11,7 +11,7 @@ public class ApiResponse<T>
     /// The result of the operation.
     /// </summary>
     [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonCamelCaseEnumConverter))]
+    [JsonConverter(typeof(JsonCamelCaseEnumConverter<ApiResponseResult>))]
     public ApiResponseResult Status { get; init; }
 
     /// <summary>
