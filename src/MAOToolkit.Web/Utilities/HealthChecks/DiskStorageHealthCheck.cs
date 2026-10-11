@@ -3,17 +3,11 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MAOToolkit.Utilities.HealthChecks;
 
-public class DiskStorageHealthCheck : IHealthCheck
+public sealed class DiskStorageHealthCheck(
+    DriveInfo drive, 
+    int minimumFreeMegabytes
+    ) : IHealthCheck
 {
-    private readonly DriveInfo drive;
-    private readonly int minimumFreeMegabytes;
-
-    public DiskStorageHealthCheck(DriveInfo drive, int minimumFreeMegabytes)
-    {
-        this.drive = drive;
-        this.minimumFreeMegabytes = minimumFreeMegabytes;
-    }
-
     public Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -54,9 +48,9 @@ public static class DiskStorageHealthCheckExtensions
     /// <returns>The <see cref="IHealthChecksBuilder"/>.</returns>
     public static IHealthChecksBuilder AddDiskStorageHealthCheck(
         this IHealthChecksBuilder builder, DriveInfo drive, int minimumFreeMegabytes, string? name = null,
-        HealthStatus? failureStatus = default, IEnumerable<string>? tags = null, TimeSpan? timeout = default)
+        HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null)
     {
-        const string DRIVE_FREE_STORAGE = "Drive free storage";
+        const string driveFreeStorage = "Drive free storage";
 
         if (!drive.IsReady)
             throw new ArgumentException($"{nameof(drive)} is not ready");
@@ -65,7 +59,7 @@ public static class DiskStorageHealthCheckExtensions
             throw new ArgumentException($"{nameof(minimumFreeMegabytes)} should be greater than zero");
 
         return builder.Add(new HealthCheckRegistration(
-            name ?? DRIVE_FREE_STORAGE,
+            name ?? driveFreeStorage,
             sp => new DiskStorageHealthCheck(drive, minimumFreeMegabytes),
             failureStatus,
             tags,

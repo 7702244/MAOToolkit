@@ -11,7 +11,7 @@ public static class ClaimsPrincipalExtensions
     /// <param name="principal">The <see cref="ClaimsPrincipal"/> instance this method extends.</param>
     /// <param name="claimType">The claim type whose first value should be returned.</param>
     /// <returns>The value of the first instance of the specified claim type, or null if the claim is not present.</returns>
-    internal static string? FindFirstValue(this ClaimsPrincipal principal, string claimType)
+    private static string? FindFirstValue(this ClaimsPrincipal principal, string claimType)
     {
         ArgumentNullException.ThrowIfNull(principal);
         var claim = principal.FindFirst(claimType);

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace MAOToolkit.Utilities.JsonConverters;
 
-public class JsonStringValuesConverter : JsonConverter<StringValues>
+public sealed class JsonStringValuesConverter : JsonConverter<StringValues>
 {
     public override StringValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

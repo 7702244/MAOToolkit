@@ -2,13 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MAOToolkit.Utilities.ActionResults;
 
-public class NotModifiedResult : StatusCodeResult
+public class NotModifiedResult() : StatusCodeResult(304)
 {
-    public NotModifiedResult()
-        : base(304)
-    {
-    }
-
     public override void ExecuteResult(ActionContext context)
     {
         // Explicitly set the Content-Length header so the client doesn't wait for

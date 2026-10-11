@@ -5,7 +5,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace MAOToolkit.Utilities.JsonConverters;
 
-public class JsonRouteValueDictionaryConverter : JsonConverter<RouteValueDictionary>
+public sealed class JsonRouteValueDictionaryConverter : JsonConverter<RouteValueDictionary>
 {
     public override RouteValueDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

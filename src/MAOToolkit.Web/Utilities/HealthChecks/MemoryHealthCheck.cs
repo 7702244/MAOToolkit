@@ -3,15 +3,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MAOToolkit.Utilities.HealthChecks;
 
-public class MemoryHealthCheck : IHealthCheck
+public sealed class MemoryHealthCheck(int maxMbAllocated)
+    : IHealthCheck
 {
-    private readonly int maxMbAllocated;
-
-    public MemoryHealthCheck(int maxMbAllocated)
-    {
-        this.maxMbAllocated = maxMbAllocated;
-    }
-
     public Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -51,15 +45,15 @@ public static class MemoryHealthCheckExtensions
     /// <returns>The <see cref="IHealthChecksBuilder"/>.</returns>
     public static IHealthChecksBuilder AddProcessAllocatedMemoryHealthCheck(
         this IHealthChecksBuilder builder, int maximumMegabytesAllocated, string? name = null,
-        HealthStatus? failureStatus = default, IEnumerable<string>? tags = null, TimeSpan? timeout = default)
+        HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null)
     {
-        const string PROCESS_ALLOCATED_MEMORY = "Allocated memory";
+        const string processAllocatedMemory = "Allocated memory";
 
         if (maximumMegabytesAllocated <= 0)
             throw new ArgumentException($"{nameof(maximumMegabytesAllocated)} should be greater than zero");
 
         return builder.Add(new HealthCheckRegistration(
-            name ?? PROCESS_ALLOCATED_MEMORY,
+            name ?? processAllocatedMemory,
             sp => new MemoryHealthCheck(maximumMegabytesAllocated),
             failureStatus,
             tags,
