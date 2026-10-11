@@ -14,11 +14,17 @@ public static class TempDataExtensions
         Converters = { new JsonStringConverter(), new JsonTimeSpanConverter(), new JsonStringValuesConverter(), new JsonRouteValueDictionaryConverter() },
     };
 
+    /// <summary>
+    /// Serializes and stores a value in TempData.
+    /// </summary>
     public static void Put<T>(this ITempDataDictionary tempData, string key, T value) where T : new()
     {
         tempData[key] = JsonSerializer.Serialize(value, JsonSettings);
     }
 
+    /// <summary>
+    /// Reads and deserializes a value from TempData.
+    /// </summary>
     public static T Get<T>(this ITempDataDictionary tempData, string key) where T : new()
     {
         if (!tempData.TryGetValue(key, out object? obj) || obj is null)
@@ -29,6 +35,9 @@ public static class TempDataExtensions
         return JsonSerializer.Deserialize<T>((string)obj, JsonSettings) ?? new T();
     }
 
+    /// <summary>
+    /// Reads a value from TempData without removing it.
+    /// </summary>
     public static T Peek<T>(this ITempDataDictionary tempData, string key) where T : new()
     {
         tempData.Keep(key);

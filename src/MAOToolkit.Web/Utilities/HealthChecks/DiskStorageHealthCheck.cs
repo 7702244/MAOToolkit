@@ -3,11 +3,17 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MAOToolkit.Utilities.HealthChecks;
 
+/// <summary>
+/// Checks available disk space against a threshold.
+/// </summary>
 public sealed class DiskStorageHealthCheck(
     DriveInfo drive, 
     int minimumFreeMegabytes
     ) : IHealthCheck
 {
+    /// <summary>
+    /// Checks the configured health threshold.
+    /// </summary>
     public Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -29,7 +35,6 @@ public sealed class DiskStorageHealthCheck(
             data: data));
     }
 }
-
 public static class DiskStorageHealthCheckExtensions
 {
     /// <summary>

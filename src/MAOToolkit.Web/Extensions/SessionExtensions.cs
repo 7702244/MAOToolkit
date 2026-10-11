@@ -12,11 +12,17 @@ public static class SessionExtensions
         PropertyNameCaseInsensitive = true
     };
 
+    /// <summary>
+    /// Serializes and stores an object in session.
+    /// </summary>
     public static void SetObject(this ISession session, string key, object value)
     {
         session.SetString(key, JsonSerializer.Serialize(value, JsonSettings));
     }
 
+    /// <summary>
+    /// Reads and deserializes an object from session.
+    /// </summary>
     public static T? GetObject<T>(this ISession session, string key)
     {
         string? value = session.GetString(key);
@@ -28,6 +34,9 @@ public static class SessionExtensions
         return JsonSerializer.Deserialize<T>(value, JsonSettings);
     }
 
+    /// <summary>
+    /// Returns the existing value or adds a value created by the factory.
+    /// </summary>
     public static T? GetOrAdd<T>(this ISession session, string key, Func<T> getter)
     {
         T? value;
@@ -46,6 +55,9 @@ public static class SessionExtensions
         return value;
     }
 
+    /// <summary>
+    /// Returns the existing value or adds a value created by the factory.
+    /// </summary>
     public static async Task<T?> GetOrAdd<T>(this ISession session, string key, Func<Task<T>> getter)
     {
         T? value;

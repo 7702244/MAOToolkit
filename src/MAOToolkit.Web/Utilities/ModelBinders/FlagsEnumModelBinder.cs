@@ -3,8 +3,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MAOToolkit.Utilities.ModelBinders;
 
+/// <summary>
+/// Binds comma-separated values to flags enums.
+/// </summary>
 public class FlagsEnumModelBinder : IModelBinder
 {
+    /// <summary>
+    /// Binds the request value to the model.
+    /// </summary>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         ArgumentNullException.ThrowIfNull(bindingContext);
@@ -61,9 +67,11 @@ public class FlagsEnumModelBinderProvider : IModelBinderProvider
         return context.Metadata.IsFlagsEnum ? new FlagsEnumModelBinder() : null;
     }
 }
-
 public static class FlagsEnumModelBinderExtensions
 {
+    /// <summary>
+    /// Registers the flags enum model binder provider.
+    /// </summary>
     public static void AddFlagsEnumProvider(this MvcOptions option)
     {
         option.ModelBinderProviders.Insert(0, new FlagsEnumModelBinderProvider());

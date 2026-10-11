@@ -6,6 +6,9 @@ namespace MAOToolkit.Extensions;
 
 public static class Utf8JsonReaderExtensions
 {
+    /// <summary>
+    /// Reads the current JSON token as its raw string value.
+    /// </summary>
     public static string? GetRawPropertyValue(this Utf8JsonReader jsonReader)
     {
         if (jsonReader.TokenType == JsonTokenType.Null)

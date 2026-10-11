@@ -19,18 +19,20 @@ public static class ClaimsPrincipalExtensions
     }
 
     // https://stackoverflow.com/a/35577673/809357
+    /// <summary>
+    /// Returns the user identifier claim.
+    /// </summary>
     public static string? GetUserId(this ClaimsPrincipal principal)
     {
-        ArgumentNullException.ThrowIfNull(principal);
-
         return principal.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 
     // https://ask.xiaolee.net/questions/1074898
+    /// <summary>
+    /// Returns the user identifier claim.
+    /// </summary>
     public static T? GetUserId<T>(this ClaimsPrincipal principal)
     {
-        ArgumentNullException.ThrowIfNull(principal);
-
         string? userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId is null)

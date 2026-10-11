@@ -4,6 +4,9 @@ namespace MAOToolkit.Extensions;
 
 public static class ZipArchiveExtensions
 {
+    /// <summary>
+    /// Adds a file or directory to the archive.
+    /// </summary>
     public static void CreateEntryFromAny(this ZipArchive archive, string sourcePath, string entryName = "", CompressionLevel compressionLevel = CompressionLevel.Optimal)
     {
         string fileName = Path.GetFileName(sourcePath);
@@ -19,6 +22,9 @@ public static class ZipArchiveExtensions
         }
     }
 
+    /// <summary>
+    /// Adds a directory and its files to the archive.
+    /// </summary>
     public static void CreateEntryFromDirectory(this ZipArchive archive, string sourceDirName, string entryName = "", CompressionLevel compressionLevel = CompressionLevel.Optimal)
     {
         var files = Directory.EnumerateFileSystemEntries(sourceDirName);

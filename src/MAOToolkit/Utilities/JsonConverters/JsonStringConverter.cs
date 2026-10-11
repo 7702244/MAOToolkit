@@ -10,11 +10,17 @@ namespace MAOToolkit.Utilities.JsonConverters;
 /// </summary>
 public sealed class JsonStringConverter : JsonConverter<string>
 {
+    /// <summary>
+    /// Reads a value from JSON.
+    /// </summary>
     public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetRawPropertyValue();
     }
 
+    /// <summary>
+    /// Writes a value to JSON.
+    /// </summary>
     public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value);

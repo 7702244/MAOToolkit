@@ -5,6 +5,9 @@ namespace MAOToolkit.Extensions;
 
 public static class EnumerableExtensions
 {
+    /// <summary>
+    /// Creates route values from key-value pairs and an optional object.
+    /// </summary>
     public static RouteValueDictionary ToRouteValues(this IEnumerable<KeyValuePair<string, StringValues>> col, object? obj = null)
     {
         var values = new RouteValueDictionary(obj);

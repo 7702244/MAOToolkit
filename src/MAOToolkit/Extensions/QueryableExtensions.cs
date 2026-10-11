@@ -121,6 +121,9 @@ public static class QueryableExtensions
                 m.IsGenericMethodDefinition &&
                 m.GetParameters().Length == 2);
 
+    /// <summary>
+    /// Filters items that match any supplied predicate.
+    /// </summary>
     public static IQueryable<T> WhereAny<T>(this IQueryable<T> queryable, params Expression<Func<T, bool>>[] predicates)
     {
         var parameter = Expression.Parameter(typeof(T));

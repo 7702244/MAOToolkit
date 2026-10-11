@@ -5,8 +5,14 @@ using Microsoft.Extensions.Primitives;
 
 namespace MAOToolkit.Utilities.JsonConverters;
 
+/// <summary>
+/// Converts route value dictionaries to and from JSON objects.
+/// </summary>
 public sealed class JsonRouteValueDictionaryConverter : JsonConverter<RouteValueDictionary>
 {
+    /// <summary>
+    /// Reads a value from JSON.
+    /// </summary>
     public override RouteValueDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -49,6 +55,9 @@ public sealed class JsonRouteValueDictionaryConverter : JsonConverter<RouteValue
         throw new JsonException();
     }
 
+    /// <summary>
+    /// Writes a value to JSON.
+    /// </summary>
     public override void Write(Utf8JsonWriter writer, RouteValueDictionary value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();

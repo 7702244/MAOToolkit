@@ -36,6 +36,9 @@ public static class IPAddressExtensions
         return isLinkLocalAddress;
     }
 
+    /// <summary>
+    /// Converts an IPv4 address to an integer.
+    /// </summary>
     public static int ToInt(this IPAddress ip)
     {
         return BitConverter.ToInt32(ip.GetAddressBytes(), 0);

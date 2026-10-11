@@ -124,6 +124,9 @@ public static class HtmlHelperExtensions
         return HtmlString.Empty;
     }
 
+    /// <summary>
+    /// Creates select list items for an enum.
+    /// </summary>
     public static IEnumerable<SelectListItem> GetEnumSelectList<TEnum>(this IHtmlHelper html, string selectedValue) where TEnum : struct
     {
         var selectList = html.GetEnumSelectList<TEnum>();

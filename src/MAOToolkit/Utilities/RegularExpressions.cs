@@ -2,15 +2,25 @@ using System.Text.RegularExpressions;
 
 namespace MAOToolkit.Utilities;
 
+/// <summary>
+/// Provides commonly used regular expressions.
+/// </summary>
 public static partial class RegularExpressions
 {
+    /// <summary>Matches URLs.</summary>
     public static readonly Regex URL = _url();
     //public static readonly Regex Url = new(@"https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&//=]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    /// <summary>Matches IPv4 and IPv6 addresses.</summary>
     public static readonly Regex IPAddress = _ipAddress();
+    /// <summary>Matches email addresses.</summary>
     public static readonly Regex Email = _email();
+    /// <summary>Matches escaped Unicode code points.</summary>
     public static readonly Regex UnicodeString = _unicodeString();
+    /// <summary>Matches repeated or unusual whitespace.</summary>
     public static readonly Regex DoubleWhitespaces = _doubleWhitespaces();
+    /// <summary>Matches non-digit characters.</summary>
     public static readonly Regex NotDigits = _notDigits();
+    /// <summary>Matches hexadecimal color values.</summary>
     public static readonly Regex HexColor = _hexColor();
 
     [GeneratedRegex("(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[-A-Zа-я0-9+&@#\\/%=~_|$?!:;,.])*(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#\\/%=~_|$])", RegexOptions.IgnoreCase | RegexOptions.Compiled)]

@@ -4,8 +4,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MAOToolkit.Utilities.ModelBinders;
 
+/// <summary>
+/// Binds date and time values using the current culture.
+/// </summary>
 public class DateTimeModelBinder : IModelBinder
 {
+    /// <summary>
+    /// Binds the request value to the model.
+    /// </summary>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         ArgumentNullException.ThrowIfNull(bindingContext);
@@ -38,8 +44,14 @@ public class DateTimeModelBinder : IModelBinder
     }
 }
 
+/// <summary>
+/// Provides the date and time model binder.
+/// </summary>
 public class DateTimeCultureProvider : IModelBinderProvider
 {
+    /// <summary>
+    /// Returns a model binder when the model type is supported.
+    /// </summary>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -52,9 +64,11 @@ public class DateTimeCultureProvider : IModelBinderProvider
         return null;
     }
 }
-
 public static class DateTimeModelBinderExtensions
 {
+    /// <summary>
+    /// Registers the date and time model binder provider.
+    /// </summary>
     public static void AddDateTimeCultureProvider(this MvcOptions option)
     {
         option.ModelBinderProviders.Insert(0, new DateTimeCultureProvider());

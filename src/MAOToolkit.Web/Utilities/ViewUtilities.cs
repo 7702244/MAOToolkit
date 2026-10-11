@@ -9,17 +9,26 @@ using Microsoft.AspNetCore.Routing;
 
 namespace MAOToolkit.Utilities;
 
+/// <summary>
+/// Defines a service that renders views to strings.
+/// </summary>
 public interface IViewRenderService
 {
     Task<string> RenderToStringAsync(string viewName, object model);
 }
 
+/// <summary>
+/// Renders Razor views to strings.
+/// </summary>
 public class ViewRenderService : IViewRenderService
 {
     private readonly IRazorViewEngine razorViewEngine;
     private readonly ITempDataProvider tempDataProvider;
     private readonly IServiceProvider serviceProvider;
 
+    /// <summary>
+    /// Creates a view renderer using the specified Razor services.
+    /// </summary>
     public ViewRenderService(IRazorViewEngine razorViewEngine,
         ITempDataProvider tempDataProvider,
         IServiceProvider serviceProvider)
@@ -29,6 +38,9 @@ public class ViewRenderService : IViewRenderService
         this.serviceProvider = serviceProvider;
     }
 
+    /// <summary>
+    /// Renders the named view and returns its HTML.
+    /// </summary>
     public async Task<string> RenderToStringAsync(string viewName, object model)
     {
         var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };

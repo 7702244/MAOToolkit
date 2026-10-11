@@ -2,8 +2,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 namespace MAOToolkit.Utilities.MetadataProviders;
 
+/// <summary>
+/// Applies edit format metadata from EditFormatAttribute.
+/// </summary>
 public class EditFormatMetadataProvider : IDisplayMetadataProvider
 {
+    /// <summary>
+    /// Sets edit format metadata from the associated attribute.
+    /// </summary>
     public void CreateDisplayMetadata(DisplayMetadataProviderContext context)
     {
         var editFormatAttribute = context.Attributes.OfType<EditFormatAttribute>().FirstOrDefault();

@@ -3,9 +3,15 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MAOToolkit.Utilities.HealthChecks;
 
+/// <summary>
+/// Checks process memory usage against a threshold.
+/// </summary>
 public sealed class MemoryHealthCheck(int maxMbAllocated)
     : IHealthCheck
 {
+    /// <summary>
+    /// Checks the configured health threshold.
+    /// </summary>
     public Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -27,7 +33,6 @@ public sealed class MemoryHealthCheck(int maxMbAllocated)
             data: data));
     }
 }
-
 public static class MemoryHealthCheckExtensions
 {
     /// <summary>

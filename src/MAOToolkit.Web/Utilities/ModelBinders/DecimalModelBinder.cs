@@ -4,8 +4,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MAOToolkit.Utilities.ModelBinders;
 
+/// <summary>
+/// Binds decimal values using invariant culture.
+/// </summary>
 public class DecimalModelBinder : IModelBinder
 {
+    /// <summary>
+    /// Binds the request value to the model.
+    /// </summary>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         ArgumentNullException.ThrowIfNull(bindingContext);
@@ -41,8 +47,14 @@ public class DecimalModelBinder : IModelBinder
     }
 }
 
+/// <summary>
+/// Provides the invariant decimal model binder.
+/// </summary>
 public class DecimalInvariantProvider : IModelBinderProvider
 {
+    /// <summary>
+    /// Returns a model binder when the model type is supported.
+    /// </summary>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -55,9 +67,11 @@ public class DecimalInvariantProvider : IModelBinderProvider
         return null;
     }
 }
-
 public static class DecimalModelBinderExtensions
 {
+    /// <summary>
+    /// Registers the invariant decimal model binder provider.
+    /// </summary>
     public static void AddDecimalInvariantProvider(this MvcOptions option)
     {
         option.ModelBinderProviders.Insert(0, new DecimalInvariantProvider());

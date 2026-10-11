@@ -2,6 +2,9 @@ using System.Net;
 
 namespace MAOToolkit.Utilities.HttpClientHandlers;
 
+/// <summary>
+/// Retries requests after a 429 response when instructed by the server.
+/// </summary>
 public sealed class RetryHandler : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(

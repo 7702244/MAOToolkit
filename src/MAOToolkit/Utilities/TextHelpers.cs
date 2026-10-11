@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace MAOToolkit.Utilities;
 
+/// <summary>
+/// Provides text-processing helper methods.
+/// </summary>
 public static class TextHelpers
 {
     private static readonly Regex PairedTags = new(@"<([A-Z][A-Z0-9]*)\b(?:(?!>).)*>(?:.*?)<\/\1>|(?:<!DOCTYPE(?:.*?)>)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -372,6 +375,9 @@ public static class TextHelpers
         return score >= spamWordsScore;
     }
 
+    /// <summary>
+    /// Checks whether the string is a valid email address.
+    /// </summary>
     public static bool IsValidEmail(string email)
     {
         try
@@ -385,6 +391,9 @@ public static class TextHelpers
         }
     }
 
+    /// <summary>
+    /// Normalizes an email string and optionally removes invalid addresses.
+    /// </summary>
     public static string CanonizeEmailString(string? str, bool removeInvalid = false)
     {
         if (String.IsNullOrEmpty(str))

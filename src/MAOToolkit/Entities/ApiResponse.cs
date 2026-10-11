@@ -4,7 +4,13 @@ using MAOToolkit.Utilities.JsonConverters;
 namespace MAOToolkit.Entities;
 
 // https://github.com/omniti-labs/jsend
+/// <summary>
+/// Represents an API response without a typed payload.
+/// </summary>
 public class ApiResponse : ApiResponse<object> { }
+/// <summary>
+/// Represents an API response with a typed payload.
+/// </summary>
 public class ApiResponse<T>
 {
     /// <summary>
@@ -26,14 +32,29 @@ public class ApiResponse<T>
     [JsonPropertyName("data")]
     public T? Data { get; init; }
 
+    /// <summary>
+    /// Creates a successful API response.
+    /// </summary>
     public static ApiResponse<T> Success(string message) => new() { Status = ApiResponseResult.Success, Message = message };
 
+    /// <summary>
+    /// Creates a successful API response.
+    /// </summary>
     public static ApiResponse<T> Success(T data) => new() { Status = ApiResponseResult.Success, Data = data };
 
+    /// <summary>
+    /// Creates a successful API response.
+    /// </summary>
     public static ApiResponse<T> Success(string message, T data) => new() { Status = ApiResponseResult.Success, Message = message, Data = data };
 
+    /// <summary>
+    /// Creates an error API response.
+    /// </summary>
     public static ApiResponse<T> Error(string message) => new() { Status = ApiResponseResult.Error, Message = message };
 
+    /// <summary>
+    /// Creates an error API response.
+    /// </summary>
     public static ApiResponse<T> Error(string message, T data) => new() { Status = ApiResponseResult.Error, Message = message, Data = data };
 }
 

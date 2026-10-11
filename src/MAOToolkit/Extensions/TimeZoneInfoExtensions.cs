@@ -24,6 +24,9 @@ public static class TimeZoneInfoExtensions
         return TimeZoneInfo.ConvertTimeToUtc(value, timeZone);
     }
 
+    /// <summary>
+    /// Returns the IANA identifier for the time zone.
+    /// </summary>
     public static string GetIanaTimeZoneId(this TimeZoneInfo tzi)
     {
         if (tzi.HasIanaId)
@@ -35,6 +38,9 @@ public static class TimeZoneInfoExtensions
         throw new TimeZoneNotFoundException($"No IANA time zone found for \"{tzi.Id}\".");
     }
 
+    /// <summary>
+    /// Returns the Windows identifier for the time zone.
+    /// </summary>
     public static string GetWindowsTimeZoneId(this TimeZoneInfo tzi)
     {
         if (!tzi.HasIanaId)

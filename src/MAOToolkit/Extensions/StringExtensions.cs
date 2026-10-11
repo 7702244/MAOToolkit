@@ -93,6 +93,9 @@ public static class StringExtensions
         return str;
     }
 
+    /// <summary>
+    /// Parses the string as a nullable value type.
+    /// </summary>
     public static T? ToNullable<T>(this string s) where T : struct
     {
         var result = new T?();

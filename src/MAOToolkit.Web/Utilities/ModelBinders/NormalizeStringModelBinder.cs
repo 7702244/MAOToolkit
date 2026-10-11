@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MAOToolkit.Utilities.ModelBinders;
 
+/// <summary>
+/// Binds strings after trimming and optional truncation.
+/// </summary>
 public class NormalizeStringModelBinder : IModelBinder
 {
+    /// <summary>
+    /// Binds the request value to the model.
+    /// </summary>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         ArgumentNullException.ThrowIfNull(bindingContext);
@@ -47,8 +53,14 @@ public class NormalizeStringModelBinder : IModelBinder
     }
 }
 
+/// <summary>
+/// Provides the string model binder.
+/// </summary>
 public class NormalizeStringModelBinderProvider : IModelBinderProvider
 {
+    /// <summary>
+    /// Returns a model binder when the model type is supported.
+    /// </summary>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -61,9 +73,11 @@ public class NormalizeStringModelBinderProvider : IModelBinderProvider
         return null;
     }
 }
-
 public static class NormalizeStringModelBinderExtensions
 {
+    /// <summary>
+    /// Registers the string model binder provider.
+    /// </summary>
     public static void AddNormalizeStringProvider(this MvcOptions option)
     {
         option.ModelBinderProviders.Insert(0, new NormalizeStringModelBinderProvider());

@@ -2,10 +2,16 @@ using System.Collections.Concurrent;
 
 namespace MAOToolkit.Utilities;
 
+/// <summary>
+/// Provides keyed asynchronous locks.
+/// </summary>
 public static class LockProvider
 {
     private static readonly ConcurrentDictionary<object, AsyncLock> _locks = new();
 
+    /// <summary>
+    /// Acquires an asynchronous lock for the specified key.
+    /// </summary>
     public static async Task<IDisposable> LockAsync(object key, CancellationToken ct = default)
     {
         var asyncLock = _locks.GetOrAdd(key, _ => new AsyncLock());

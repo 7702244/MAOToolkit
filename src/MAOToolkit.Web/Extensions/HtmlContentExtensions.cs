@@ -8,6 +8,9 @@ public static class HtmlContentExtensions
 {
     private static readonly HtmlEncoder UnicodeHtmlEncoder = HtmlEncoder.Create(UnicodeRanges.All);
         
+    /// <summary>
+    /// Returns the HTML content as a string.
+    /// </summary>
     public static string GetString(this IHtmlContent content)
     {
         using (var writer = new StringWriter())
