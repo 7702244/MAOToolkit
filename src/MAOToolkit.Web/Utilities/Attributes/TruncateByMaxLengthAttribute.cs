@@ -8,4 +8,4 @@ namespace MAOToolkit.Utilities.Attributes;
 /// specified by the <see cref="MaxLengthAttribute"/> attribute.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class TruncateByMaxLengthAttribute : Attribute;
+public sealed class TruncateByMaxLengthAttribute : Attribute;

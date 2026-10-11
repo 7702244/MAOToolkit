@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace MAOToolkit.Utilities.JsonConverters;
 
-public class JsonTimeSpanConverter : JsonConverter<TimeSpan>
+public sealed class JsonTimeSpanConverter : JsonConverter<TimeSpan>
 {
     public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

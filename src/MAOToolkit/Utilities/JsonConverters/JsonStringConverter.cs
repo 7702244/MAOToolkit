@@ -8,7 +8,7 @@ namespace MAOToolkit.Utilities.JsonConverters;
 /// Gives opportunity for deserializing non-string primitives like
 /// Int32, Bool, Double, etc. properties into String properties.
 /// </summary>
-public class JsonStringConverter : JsonConverter<string>
+public sealed class JsonStringConverter : JsonConverter<string>
 {
     public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

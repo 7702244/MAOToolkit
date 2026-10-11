@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace MAOToolkit.Utilities.JsonConverters;
 
-public class JsonIPAddressConverter : JsonConverter<IPAddress>
+public sealed class JsonIPAddressConverter : JsonConverter<IPAddress>
 {
     public override IPAddress? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

@@ -29,7 +29,7 @@ public static class LockProvider
         }
     }
 
-    private class AsyncLock
+    private sealed class AsyncLock
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private int _refCount;
@@ -43,7 +43,7 @@ public static class LockProvider
             return new LockHandle(this);
         }
 
-        private class LockHandle(AsyncLock parent) : IDisposable
+        private sealed class LockHandle(AsyncLock parent) : IDisposable
         {
             private int _disposed;
 
@@ -64,7 +64,7 @@ public static class LockProvider
         }
     }
 
-    private class AsyncLockRelease(Action release) : IDisposable
+    private sealed class AsyncLockRelease(Action release) : IDisposable
     {
         private int _disposed;
 

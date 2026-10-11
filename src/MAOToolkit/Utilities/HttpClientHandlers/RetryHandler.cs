@@ -2,7 +2,7 @@ using System.Net;
 
 namespace MAOToolkit.Utilities.HttpClientHandlers;
 
-public class RetryHandler : DelegatingHandler
+public sealed class RetryHandler : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

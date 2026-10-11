@@ -2,7 +2,7 @@ using MAOToolkit.Extensions;
 
 namespace MAOToolkit.Utilities.HttpClientHandlers;
 
-public class LoggingHandler : DelegatingHandler
+public sealed class LoggingHandler : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

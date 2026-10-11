@@ -18,7 +18,7 @@ public class EditFormatMetadataProvider : IDisplayMetadataProvider
 ///     Allows overriding EditFormatString for a given field.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class EditFormatAttribute : Attribute
+public sealed class EditFormatAttribute : Attribute
 {
     /// <summary>
     ///     Gets or sets the format string
