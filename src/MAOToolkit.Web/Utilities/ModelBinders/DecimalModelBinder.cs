@@ -30,10 +30,8 @@ public class DecimalModelBinder : IModelBinder
             return Task.CompletedTask;
         }
 
-        // Remove unnecessary commas.
-        value = value.Replace(",", String.Empty);
-
-        if (!Decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal parsedValue))
+        if (!NormalizeSeparators(ref value)
+            || !Decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal parsedValue))
         {
             // Error
             bindingContext.ModelState.TryAddModelError(
@@ -45,6 +43,99 @@ public class DecimalModelBinder : IModelBinder
         bindingContext.Result = ModelBindingResult.Success(parsedValue);
         return Task.CompletedTask;
     }
+
+    private static bool NormalizeSeparators(ref string value)
+    {
+        int commaIndex = value.IndexOf(',');
+        if (commaIndex < 0)
+        {
+            return true;
+        }
+
+        int dotIndex = value.IndexOf('.');
+        if (dotIndex < 0)
+        {
+            // A single comma is the decimal separator. Multiple commas are ambiguous.
+            if (commaIndex != value.LastIndexOf(','))
+            {
+                return false;
+            }
+
+            value = value.Replace(',', '.');
+            return true;
+        }
+
+        // When both separators are present, dots are decimal separators and commas
+        // are thousands separators. Commas after the decimal point are invalid.
+        if (value.IndexOf(',', dotIndex) >= 0 || !HasValidThousandsGrouping(value.AsSpan(0, dotIndex)))
+        {
+            return false;
+        }
+
+        value = value.Replace(",", String.Empty);
+        return true;
+    }
+
+    private static bool HasValidThousandsGrouping(ReadOnlySpan<char> integerPart)
+    {
+        int start = 0;
+        while (start < integerPart.Length && !IsAsciiDigit(integerPart[start]))
+        {
+            start++;
+        }
+
+        int end = start;
+        while (end < integerPart.Length && (IsAsciiDigit(integerPart[end]) || integerPart[end] == ','))
+        {
+            end++;
+        }
+
+        ReadOnlySpan<char> number = integerPart[start..end];
+        int firstComma = number.IndexOf(',');
+        if (firstComma < 0)
+        {
+            return true;
+        }
+
+        if (firstComma is < 1 or > 3)
+        {
+            return false;
+        }
+
+        int groupStart = 0;
+        bool firstGroup = true;
+        while (true)
+        {
+            int relativeCommaIndex = number[groupStart..].IndexOf(',');
+            int groupEnd = relativeCommaIndex < 0 ? number.Length : groupStart + relativeCommaIndex;
+            ReadOnlySpan<char> group = number[groupStart..groupEnd];
+            int expectedLength = firstGroup ? firstComma : 3;
+            if (group.Length != expectedLength)
+            {
+                return false;
+            }
+
+            foreach (char character in group)
+            {
+                if (!IsAsciiDigit(character))
+                {
+                    return false;
+                }
+            }
+
+            if (relativeCommaIndex < 0)
+            {
+                break;
+            }
+
+            groupStart = groupEnd + 1;
+            firstGroup = false;
+        }
+
+        return true;
+    }
+
+    private static bool IsAsciiDigit(char value) => value is >= '0' and <= '9';
 }
 
 /// <summary>
