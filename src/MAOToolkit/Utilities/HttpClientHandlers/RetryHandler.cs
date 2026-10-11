@@ -28,10 +28,29 @@ public class RetryHandler : DelegatingHandler
             {
                 await Task.Delay(delta, cancellationToken);
 
-                response = await base.SendAsync(request, cancellationToken);
+                var newRequest = CloneRequest(request);
+                response = await base.SendAsync(newRequest, cancellationToken);
             }
         }
 
         return response;
+    }
+    
+    private static HttpRequestMessage CloneRequest(HttpRequestMessage request)
+    {
+        var clone = new HttpRequestMessage(request.Method, request.RequestUri)
+        {
+            Version = request.Version,
+            VersionPolicy = request.VersionPolicy,
+            Content = request.Content
+        };
+        
+        foreach (var header in request.Headers)
+            clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        
+        foreach (var option in request.Options)
+            clone.Options.Set(new HttpRequestOptionsKey<object?>(option.Key), option.Value);
+
+        return clone;
     }
 }
