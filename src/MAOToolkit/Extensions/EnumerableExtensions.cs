@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace MAOToolkit.Extensions;
@@ -52,25 +53,36 @@ public static class EnumerableExtensions
     private static Func<T, object?> CreateAccessor<T>(string propertyPath)
     {
         string[] properties = propertyPath.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var propertyCache = new ConcurrentDictionary<(Type Type, int Index), PropertyInfo>();
 
         return item =>
         {
             object? value = item;
 
-            foreach (string propertyName in properties)
+            for (int i = 0; i < properties.Length; i++)
             {
                 if (value == null)
                     return null;
 
-                var property = value.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-                if (property == null)
-                    throw new ArgumentException($"Property '{propertyName}' not found.");
-
+                // Resolve each segment once per runtime type. This preserves
+                // support for polymorphic nested values without repeating
+                // reflection lookup for every sorted element.
+                var property = propertyCache.GetOrAdd(
+                    (value.GetType(), i),
+                    key => ResolveProperty(key.Type, properties[key.Index]));
                 value = property.GetValue(value);
             }
 
             return value;
         };
+
+        static PropertyInfo ResolveProperty(Type runtimeType, string propertyName)
+        {
+            var property = runtimeType.GetProperty(
+                propertyName,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            return property ?? throw new ArgumentException($"Property '{propertyName}' not found.");
+        }
     }
 }
